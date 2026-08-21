@@ -1,0 +1,17 @@
+@{
+    ViewData["Title"] = "داشبورد";
+    Layout = "_AdminLayout";
+}
+<h1 class="mt-4">داشبورد مدیریت</h1>
+<div class="row mt-4">
+    <div class="col-md-4">
+        <div class="card text-white bg-primary mb-3">
+            <div class="card-header">مدیریت املاک</div>
+            <div class="card-body">
+                <h5 class="card-title">املاک ثبت شده</h5>
+                <p class="card-text">برای مدیریت املاک اینجا کلیک کنید.</p>
+                <a asp-controller="AdminProperties" asp-action="Index" class="btn btn-light">رفتن به املاک</a>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,44 @@
+@model IEnumerable<Ghaem.Web.Models.Entities.Property>
+@{
+    ViewData["Title"] = "صفحه اصلی";
+}
+<div class="text-center mt-5 mb-5 p-5 bg-light rounded">
+    <h1 class="display-4 text-primary">به املاک قائم خوش آمدید</h1>
+    <p class="lead mt-3">بهترین و مناسب‌ترین املاک برای خرید و اجاره را با ما تجربه کنید.</p>
+    <a asp-action="Properties" class="btn btn-primary btn-lg mt-3">مشاهده همه املاک</a>
+</div>
+
+<h2 class="mb-4">جدیدترین املاک</h2>
+<div class="row">
+    @foreach (var item in Model)
+    {
+        var coverImg = item.Images.OrderBy(i => i.DisplayOrder).FirstOrDefault(i => i.IsCover) ?? item.Images.FirstOrDefault();
+        var imgSrc = coverImg != null ? $"/images/properties/{coverImg.FileName}" : "/images/no-image.jpg";
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <img src="@imgSrc" class="card-img-top" alt="@item.Title" style="height: 200px; object-fit: cover;">
+                <div class="card-body">
+                    <h5 class="card-title">@item.Title</h5>
+                    <p class="card-text text-muted">@item.PropertyType | @item.TransactionType</p>
+                    <p class="card-text">
+                        <strong>متراژ:</strong> @item.Area متر
+                    </p>
+                    <p class="card-text text-success fw-bold">
+                        @if (item.TransactionType == Ghaem.Web.Models.Enums.TransactionType.Sale)
+                        {
+                            <text>فروش: @item.SalePrice?.ToString("N0") تومان</text>
+                        }
+                        else
+                        {
+                            <text>رهن: @item.Deposit?.ToString("N0") تومان</text>
+                        }
+                    </p>
+                </div>
+                <div class="card-footer bg-white border-top-0">
+                    <a asp-action="PropertyDetails" asp-route-slug="@item.Slug" class="btn btn-outline-primary w-100">مشاهده جزئیات</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>

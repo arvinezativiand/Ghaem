@@ -1,0 +1,166 @@
+@using Ghaem.Web.Models.Enums
+@model Ghaem.Web.Models.ViewModels.PropertyFormViewModel
+
+<input type="hidden" asp-for="Slug" />
+
+<div class="row">
+    <div class="col-md-12 mb-3">
+        <label asp-for="Title" class="form-label">عنوان</label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+    
+    <div class="col-md-6 mb-3">
+        <label asp-for="PropertyType" class="form-label">نوع ملک</label>
+        <select asp-for="PropertyType" class="form-select" asp-items="Html.GetEnumSelectList<PropertyType>()"></select>
+    </div>
+    <div class="col-md-6 mb-3">
+        <label asp-for="TransactionType" class="form-label">نوع معامله</label>
+        <select asp-for="TransactionType" class="form-select" id="TransactionType" asp-items="Html.GetEnumSelectList<TransactionType>()"></select>
+    </div>
+
+    @if (ViewData["IsEdit"] as bool? == true)
+    {
+        <div class="col-md-12 mb-3">
+            <label asp-for="Status" class="form-label">وضعیت</label>
+            <select asp-for="Status" class="form-select" asp-items="Html.GetEnumSelectList<PropertyStatus>()"></select>
+        </div>
+    }
+
+    <div class="col-md-3 mb-3">
+        <label asp-for="Area" class="form-label">متراژ</label>
+        <input asp-for="Area" class="form-control" type="number" />
+        <span asp-validation-for="Area" class="text-danger"></span>
+    </div>
+    <div class="col-md-3 mb-3">
+        <label asp-for="BedroomCount" class="form-label">تعداد خواب</label>
+        <input asp-for="BedroomCount" class="form-control" type="number" />
+    </div>
+    <div class="col-md-3 mb-3">
+        <label asp-for="Floor" class="form-label">طبقه</label>
+        <input asp-for="Floor" class="form-control" type="number" />
+    </div>
+    <div class="col-md-3 mb-3">
+        <label asp-for="TotalFloors" class="form-label">تعداد کل طبقات</label>
+        <input asp-for="TotalFloors" class="form-control" type="number" />
+    </div>
+
+    <div class="col-md-12 mb-3" id="SalePriceContainer">
+        <label asp-for="SalePrice" class="form-label">قیمت فروش (تومان)</label>
+        <input asp-for="SalePrice" class="form-control currency-input" type="text" dir="ltr" />
+        <span asp-validation-for="SalePrice" class="text-danger"></span>
+    </div>
+    <div class="col-md-6 mb-3" id="DepositContainer">
+        <label asp-for="Deposit" class="form-label">مبلغ رهن/ودیعه (تومان)</label>
+        <input asp-for="Deposit" class="form-control currency-input" type="text" dir="ltr" />
+        <span asp-validation-for="Deposit" class="text-danger"></span>
+    </div>
+    <div class="col-md-6 mb-3" id="MonthlyRentContainer">
+        <label asp-for="MonthlyRent" class="form-label">اجاره ماهانه (تومان)</label>
+        <input asp-for="MonthlyRent" class="form-control currency-input" type="text" dir="ltr" />
+        <span asp-validation-for="MonthlyRent" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-12 mb-3">
+        <div class="form-check form-check-inline">
+            <input asp-for="HasParking" class="form-check-input" type="checkbox" />
+            <label asp-for="HasParking" class="form-check-label">پارکینگ</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input asp-for="HasStorage" class="form-check-input" type="checkbox" />
+            <label asp-for="HasStorage" class="form-check-label">انباری</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input asp-for="HasElevator" class="form-check-input" type="checkbox" />
+            <label asp-for="HasElevator" class="form-check-label">آسانسور</label>
+        </div>
+    </div>
+
+    <div class="col-md-12 mb-3">
+        <label asp-for="Address" class="form-label">آدرس</label>
+        <textarea asp-for="Address" class="form-control"></textarea>
+        <span asp-validation-for="Address" class="text-danger"></span>
+    </div>
+    
+    <div class="col-md-12 mb-3">
+        <label asp-for="Description" class="form-label">توضیحات تکمیلی</label>
+        <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <div class="col-md-12 mb-3">
+        <label asp-for="Images" class="form-label">آپلود تصاویر جدید (تا 20 عکس - پسوند jpg, png, webp)</label>
+        <input asp-for="Images" type="file" multiple class="form-control" accept=".jpg,.jpeg,.png,.webp" />
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var transactionSelect = document.getElementById("TransactionType");
+        var saleContainer = document.getElementById("SalePriceContainer");
+        var depositContainer = document.getElementById("DepositContainer");
+        var rentContainer = document.getElementById("MonthlyRentContainer");
+
+        function togglePriceFields() {
+            var val = transactionSelect.value;
+            // '1' is Sale, '2' is Rent (from TransactionType enum)
+            if (val == 1) {
+                saleContainer.style.display = "block";
+                depositContainer.style.display = "none";
+                rentContainer.style.display = "none";
+            } else if (val == 2) {
+                saleContainer.style.display = "none";
+                depositContainer.style.display = "block";
+                rentContainer.style.display = "block";
+            }
+        }
+
+        if(transactionSelect) {
+            transactionSelect.addEventListener("change", togglePriceFields);
+            togglePriceFields(); // initialize on load
+        }
+
+        // Currency comma formatting
+        var currencyInputs = document.querySelectorAll('.currency-input');
+        currencyInputs.forEach(function (input) {
+            // Format on load
+            if (input.value) {
+                var rawValue = input.value.replace(/,/g, '').replace(/\D/g, '');
+                if (rawValue) {
+                    input.value = Number(rawValue).toLocaleString('en-US');
+                }
+            }
+
+            input.addEventListener('input', function (e) {
+                // Save cursor position
+                var cursorPosition = this.selectionStart;
+                var originalLength = this.value.length;
+
+                var val = this.value.replace(/,/g, '').replace(/\D/g, '');
+                if (val === '') {
+                    this.value = '';
+                    return;
+                }
+
+                this.value = Number(val).toLocaleString('en-US');
+
+                // Try to keep cursor in place
+                var newLength = this.value.length;
+                var diff = newLength - originalLength;
+                if(this.setSelectionRange) {
+                    this.setSelectionRange(cursorPosition + diff, cursorPosition + diff);
+                }
+            });
+        });
+
+        // Strip commas before form submit so ASP.NET model binder receives valid decimals
+        var form = document.querySelector('form');
+        if (form) {
+            form.addEventListener('submit', function () {
+                currencyInputs.forEach(function (input) {
+                    input.value = input.value.replace(/,/g, '');
+                });
+            });
+        }
+    });
+</script>

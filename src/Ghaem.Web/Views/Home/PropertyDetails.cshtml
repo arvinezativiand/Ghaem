@@ -1,0 +1,120 @@
+@using Ghaem.Web.Models.Enums
+@model Ghaem.Web.Models.Entities.Property
+@{
+    ViewData["Title"] = Model.Title;
+    ViewData["Description"] = Model.Description.Substring(0, Math.Min(Model.Description.Length, 150));
+    // Simple canonical URL for SEO
+    var canonicalUrl = $"{Context.Request.Scheme}://{Context.Request.Host}/properties/{Model.Slug}";
+    ViewData["CanonicalUrl"] = canonicalUrl;
+}
+
+@section Scripts {
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="@ViewData["Description"]" />
+    <link rel="canonical" href="@ViewData["CanonicalUrl"]" />
+    <meta property="og:title" content="@Model.Title" />
+    <meta property="og:description" content="@ViewData["Description"]" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="@ViewData["CanonicalUrl"]" />
+    @if(Model.Images.Any()) {
+        <meta property="og:image" content="@($"{Context.Request.Scheme}://{Context.Request.Host}/images/properties/{Model.Images.OrderBy(i=>i.DisplayOrder).First().FileName}")" />
+    }
+}
+
+<div class="row mt-4">
+    <div class="col-lg-8">
+        <h1 class="mb-3">@Model.Title</h1>
+        <p class="text-muted"><i class="bi bi-geo-alt"></i> @Model.Address</p>
+
+        @if (Model.Images.Any())
+        {
+            <div id="propertyCarousel" class="carousel slide mb-4 shadow" data-bs-ride="carousel">
+                <div class="carousel-inner rounded">
+                    @{
+                        var isFirst = true;
+                        foreach (var img in Model.Images.OrderBy(i => i.DisplayOrder))
+                        {
+                            <div class="carousel-item @(isFirst ? "active" : "")">
+                                <img src="~/images/properties/@img.FileName" class="d-block w-100" style="height: 500px; object-fit: cover;" alt="@Model.Title">
+                            </div>
+                            isFirst = false;
+                        }
+                    }
+                </div>
+                @if (Model.Images.Count > 1)
+                {
+                    <button class="carousel-control-prev" type="button" data-bs-target="#propertyCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">قبلی</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#propertyCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">بعدی</span>
+                    </button>
+                }
+            </div>
+        }
+
+        <div class="card mb-4 border-0 shadow-sm">
+            <div class="card-body">
+                <h4 class="card-title mb-4">توضیحات ملک</h4>
+                <p class="card-text" style="white-space: pre-wrap;">@Model.Description</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body">
+                <h4 class="card-title text-success mb-4">
+                    @if (Model.TransactionType == TransactionType.Sale)
+                    {
+                        <text>قیمت فروش: @Model.SalePrice?.ToString("N0") تومان</text>
+                    }
+                    else
+                    {
+                        <text>رهن: @Model.Deposit?.ToString("N0") تومان <br /> اجاره: @Model.MonthlyRent?.ToString("N0") تومان</text>
+                    }
+                </h4>
+                <hr />
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        نوع ملک
+                        <span class="fw-bold">@Model.PropertyType</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        متراژ
+                        <span class="fw-bold">@Model.Area متر</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        تعداد خواب
+                        <span class="fw-bold">@Model.BedroomCount</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        طبقه
+                        <span class="fw-bold">@Model.Floor از @Model.TotalFloors</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        سال ساخت
+                        <span class="fw-bold">@Model.ConstructionYear</span>
+                    </li>
+                </ul>
+                <div class="mt-4">
+                    <h5>امکانات</h5>
+                    <div class="d-flex flex-wrap gap-2 mt-2">
+                        @if(Model.HasParking){ <span class="badge bg-secondary">پارکینگ</span> }
+                        @if(Model.HasStorage){ <span class="badge bg-secondary">انباری</span> }
+                        @if(Model.HasElevator){ <span class="badge bg-secondary">آسانسور</span> }
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card border-0 shadow-sm bg-primary text-white">
+            <div class="card-body text-center">
+                <h5>برای اطلاعات بیشتر تماس بگیرید</h5>
+                <h3 class="mt-3">۰۲۱-۱۲۳۴۵۶۷۸</h3>
+                <p>املاک قائم</p>
+            </div>
+        </div>
+    </div>
+</div>

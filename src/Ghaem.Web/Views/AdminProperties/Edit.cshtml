@@ -1,0 +1,44 @@
+@model Ghaem.Web.Models.ViewModels.PropertyFormViewModel
+@{
+    ViewData["Title"] = "ویرایش ملک";
+    Layout = "_AdminLayout";
+    ViewData["IsEdit"] = true;
+}
+<h2>ویرایش ملک: @Model.Title</h2>
+<hr />
+
+@if (ViewBag.ExistingImages != null && ((IEnumerable<Ghaem.Web.Models.Entities.PropertyImage>)ViewBag.ExistingImages).Any())
+{
+    <div class="card mb-4">
+        <div class="card-header">تصاویر موجود</div>
+        <div class="card-body d-flex flex-wrap gap-3">
+            @foreach (var img in ViewBag.ExistingImages)
+            {
+                <div class="position-relative" style="width: 150px; height: 150px;">
+                    <img src="~/images/properties/@img.FileName" class="img-thumbnail w-100 h-100 object-fit-cover" />
+                    <form asp-action="DeleteImage" asp-route-id="@img.Id" method="post" class="position-absolute top-0 start-0 m-1">
+                        <button type="submit" class="btn btn-sm btn-danger p-1" onclick="return confirm('آیا از حذف این تصویر مطمئن هستید؟');">حذف</button>
+                    </form>
+                    @if (img.IsCover)
+                    {
+                        <span class="badge bg-success position-absolute bottom-0 end-0 m-1">کاور</span>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+}
+
+<form asp-action="Edit" enctype="multipart/form-data">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="Id" />
+    <partial name="_PropertyForm" model="Model" />
+    <div class="mt-3">
+        <button type="submit" class="btn btn-primary">ذخیره تغییرات</button>
+        <a asp-action="Index" class="btn btn-secondary">بازگشت</a>
+    </div>
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

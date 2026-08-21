@@ -1,0 +1,77 @@
+@using Ghaem.Web.Models.Enums
+@model IEnumerable<Ghaem.Web.Models.Entities.Property>
+@{
+    ViewData["Title"] = "جستجوی املاک";
+}
+
+<h2 class="mb-4">جستجوی املاک</h2>
+
+<div class="card mb-4 bg-light">
+    <div class="card-body">
+        <form method="get" asp-action="Properties" class="row g-3">
+            <div class="col-md-3">
+                <label class="form-label">نوع معامله</label>
+                <select name="type" class="form-select" asp-items="Html.GetEnumSelectList<TransactionType>()">
+                    <option value="">همه</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">نوع ملک</label>
+                <select name="propType" class="form-select" asp-items="Html.GetEnumSelectList<PropertyType>()">
+                    <option value="">همه</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">حداقل قیمت/رهن</label>
+                <input type="number" name="minPrice" class="form-control" />
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">حداکثر قیمت/رهن</label>
+                <input type="number" name="maxPrice" class="form-control" />
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">جستجو</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row">
+    @if (!Model.Any())
+    {
+        <div class="col-12 text-center mt-5">
+            <h4 class="text-muted">ملکی با این مشخصات یافت نشد.</h4>
+        </div>
+    }
+    @foreach (var item in Model)
+    {
+        var coverImg = item.Images.OrderBy(i => i.DisplayOrder).FirstOrDefault(i => i.IsCover) ?? item.Images.FirstOrDefault();
+        var imgSrc = coverImg != null ? $"/images/properties/{coverImg.FileName}" : "/images/no-image.jpg";
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <img src="@imgSrc" class="card-img-top" alt="@item.Title" style="height: 200px; object-fit: cover;">
+                <div class="card-body">
+                    <h5 class="card-title">@item.Title</h5>
+                    <p class="card-text text-muted">@item.PropertyType | @item.TransactionType</p>
+                    <p class="card-text">
+                        <strong>متراژ:</strong> @item.Area متر
+                    </p>
+                    <p class="card-text text-success fw-bold">
+                        @if (item.TransactionType == TransactionType.Sale)
+                        {
+                            <text>فروش: @item.SalePrice?.ToString("N0") تومان</text>
+                        }
+                        else
+                        {
+                            <text>رهن: @item.Deposit?.ToString("N0") تومان | اجاره: @item.MonthlyRent?.ToString("N0") تومان</text>
+                        }
+                    </p>
+                </div>
+                <div class="card-footer bg-white border-top-0">
+                    <a asp-action="PropertyDetails" asp-route-slug="@item.Slug" class="btn btn-outline-primary w-100">مشاهده جزئیات</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
