@@ -11,12 +11,10 @@
 <table class="table table-striped table-hover mt-3">
     <thead>
         <tr>
-            <th>کد</th>
+            <th>تصویر</th>
             <th>عنوان</th>
-            <th>نوع</th>
             <th>معامله</th>
             <th>متراژ</th>
-            <th>وضعیت</th>
             <th>عملیات</th>
         </tr>
     </thead>
@@ -24,16 +22,20 @@
         @foreach (var item in Model)
         {
             <tr>
-                <td>@item.Id</td>
-                <td>@item.Title</td>
-                <td>@item.PropertyType</td>
-                <td>@item.TransactionType</td>
-                <td>@item.Area</td>
                 <td>
-                    <span class="badge @(item.Status == Ghaem.Web.Models.Enums.PropertyStatus.Available ? "bg-success" : "bg-secondary")">
-                        @item.Status
-                    </span>
+                    @if (item.Images != null && item.Images.Any())
+                    {
+                        var primaryImage = item.Images.OrderBy(i => i.DisplayOrder).FirstOrDefault(i => i.IsCover) ?? item.Images.FirstOrDefault();
+                        <img src="~/images/properties/@primaryImage.FileName" alt="تصویر ملک" class="img-thumbnail" style="max-width: 100px; max-height: 100px; object-fit: cover;" />
+                    }
+                    else
+                    {
+                        <span class="text-muted">بدون تصویر</span>
+                    }
                 </td>
+                <td>@item.Title</td>
+                <td>@item.TransactionType.GetDisplayName()</td>
+                <td>@item.Area</td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-primary">ویرایش</a>
                     <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">حذف</a>

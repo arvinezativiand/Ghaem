@@ -24,6 +24,7 @@ namespace Ghaem.Web.Controllers
         public async Task<IActionResult> Index()
         {
             var properties = await _context.Properties
+                .Include(p => p.Images)
                 .OrderByDescending(p => p.CreatedAt)
                 .ToListAsync();
             return View(properties);

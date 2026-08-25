@@ -20,7 +20,7 @@
                 <img src="@imgSrc" class="card-img-top" alt="@item.Title" style="height: 200px; object-fit: cover;">
                 <div class="card-body">
                     <h5 class="card-title">@item.Title</h5>
-                    <p class="card-text text-muted">@item.PropertyType | @item.TransactionType</p>
+                    <p class="card-text text-muted">@item.PropertyType.GetDisplayName() | @item.TransactionType.GetDisplayName()</p>
                     <p class="card-text">
                         <strong>متراژ:</strong> @item.Area متر
                     </p>
