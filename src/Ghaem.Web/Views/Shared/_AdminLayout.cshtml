@@ -26,37 +26,23 @@
                 </button>
                 
                 <div class="collapse navbar-collapse" id="adminNavbarContent">
-                    <!-- Search Bar -->
-                    <div class="d-none d-lg-flex flex-grow-1 justify-content-center">
-                        <div class="admin-search d-flex align-items-center">
-                            <i class="bi bi-search text-muted ms-2"></i>
-                            <input type="text" placeholder="جستجو در املاک..." />
-                        </div>
-                    </div>
+                    <!-- Search Bar removed -->
+                    <div class="d-none d-lg-flex flex-grow-1"></div>
                     
-                    <!-- Top Right Actions -->
-                    <ul class="navbar-nav ms-auto align-items-center gap-3">
+                    <!-- Mobile Navigation Links (Hidden on md and up) -->
+                    <ul class="navbar-nav d-md-none border-bottom pb-3 mb-3 gap-2 mt-3">
                         <li class="nav-item">
-                            <a class="btn btn-dark rounded-pill px-4" asp-controller="AdminProperties" asp-action="Create">
-                                افزودن ملک
+                            <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Admin" ? "active fw-bold text-primary" : "")" asp-controller="Admin" asp-action="Index">
+                                <i class="bi bi-grid-1x2 me-1"></i> داشبورد
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="btn btn-light rounded-circle shadow-sm border p-2 text-muted" asp-controller="Home" asp-action="Index" target="_blank" title="مشاهده سایت">
-                                <i class="bi bi-display"></i>
+                            <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "AdminProperties" ? "active fw-bold text-primary" : "")" asp-controller="AdminProperties" asp-action="Index">
+                                <i class="bi bi-building me-1"></i> مدیریت املاک
                             </a>
-                        </li>
-                        <li class="nav-item">
-                            <form asp-controller="Auth" asp-action="Logout" method="post" class="m-0">
-                                <button type="submit" class="btn btn-light rounded-circle shadow-sm border p-2 text-muted" title="خروج">
-                                    <i class="bi bi-box-arrow-right"></i>
-                                </button>
-                            </form>
-                        </li>
-                        <li class="nav-item border-start ps-3 ms-1 d-flex align-items-center">
-                            <img src="/images/avatar-placeholder.png" onerror="this.src='https://ui-avatars.com/api/?name=Admin&background=random'" alt="Admin" class="avatar-circle" />
                         </li>
                     </ul>
+                    
                 </div>
             </div>
         </nav>
@@ -65,8 +51,8 @@
     <div class="container-fluid">
         <div class="row">
             <!-- Sidebar -->
-            <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block sidebar collapse h-100 position-fixed" style="top: 80px; right: 0;">
-                <div class="position-sticky pt-3 h-100 d-flex flex-column">
+            <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block sidebar collapse border-end" style="background-color: #f8f9fa;">
+                <div class="position-sticky pt-3 d-flex flex-column" style="top: 80px; height: calc(100vh - 80px);">
                     <ul class="nav flex-column mb-auto">
                         <li class="nav-item">
                             <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Admin" ? "active" : "")" asp-controller="Admin" asp-action="Index">
@@ -81,30 +67,12 @@
                                 <i class="bi bi-building"></i> املاک
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-muted" href="#">
-                                <i class="bi bi-people"></i> مشتریان (بزودی)
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-muted" href="#">
-                                <i class="bi bi-wallet2"></i> مالی (بزودی)
-                            </a>
-                        </li>
                     </ul>
-                    
-                    <div class="px-4 pb-4 mt-auto">
-                        <div class="p-3 bg-light rounded-3 text-center border">
-                            <i class="bi bi-lightning-charge text-warning fs-3"></i>
-                            <h6 class="mt-2 mb-1 fw-bold">نسخه پرو</h6>
-                            <p class="fs-7 text-muted mb-0">ارتقا به نسخه حرفه‌ای</p>
-                        </div>
-                    </div>
                 </div>
             </nav>
 
             <!-- Main Content -->
-            <main class="col-md-9 me-sm-auto col-lg-10 px-md-4 admin-content" style="margin-top: 80px;">
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 admin-content pb-5" style="margin-top: 80px;">
                 @RenderBody()
             </main>
         </div>

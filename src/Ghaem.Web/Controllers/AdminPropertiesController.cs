@@ -21,10 +21,23 @@ namespace Ghaem.Web.Controllers
             _webHostEnvironment = webHostEnvironment;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? search)
         {
-            var properties = await _context.Properties
+            var query = _context.Properties
                 .Include(p => p.Images)
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                search = search.Trim();
+                query = query.Where(p => 
+                    p.Title.Contains(search) || 
+                    (p.Address != null && p.Address.Contains(search)) || 
+                    (p.Description != null && p.Description.Contains(search)));
+                ViewBag.SearchTerm = search;
+            }
+
+            var properties = await query
                 .OrderByDescending(p => p.CreatedAt)
                 .ToListAsync();
             return View(properties);
