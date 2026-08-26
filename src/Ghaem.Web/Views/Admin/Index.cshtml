@@ -1,49 +1,188 @@
 @{
     ViewData["Title"] = "داشبورد";
     Layout = "_AdminLayout";
+    
+    int totalProps = ViewBag.TotalProperties ?? 0;
+    int saleProps = ViewBag.SaleProperties ?? 0;
+    int rentProps = ViewBag.RentProperties ?? 0;
+    var recentProperties = ViewBag.RecentProperties as IEnumerable<Ghaem.Web.Models.Entities.Property>;
 }
 
-<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-4 border-bottom">
-    <h1 class="h2 text-primary-dark fw-bold"><i class="bi bi-speedometer2 me-2"></i> داشبورد مدیریت</h1>
+<!-- Top Header Section -->
+<div class="d-flex justify-content-between align-items-center mb-4 pb-2">
+    <h2 class="fw-bold mb-0" style="color: var(--primary-color);">داشبورد</h2>
 </div>
 
-<div class="row g-4 mb-4">
-    <div class="col-md-4">
-        <div class="card bg-primary text-white h-100 shadow-sm border-0">
-            <div class="card-body d-flex flex-column">
-                <div class="d-flex justify-content-between align-items-start mb-3">
-                    <div>
-                        <h6 class="card-title text-white-50 mb-1">مدیریت املاک</h6>
-                        <h3 class="fw-bold mb-0">املاک ثبت شده</h3>
+<div class="row g-4">
+    <!-- Right Column (RTL) / Main Content -->
+    <div class="col-lg-8">
+        <!-- Overview Header -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="fw-bold mb-0">نمای کلی</h5>
+            <div class="dropdown">
+                <button class="btn btn-sm btn-white border rounded-pill px-3 dropdown-toggle shadow-sm" type="button" data-bs-toggle="dropdown">
+                    ماه گذشته
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="#">هفته گذشته</a></li>
+                    <li><a class="dropdown-item" href="#">سال گذشته</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Stat Cards -->
+        <div class="row g-3 mb-4">
+            <!-- Total Properties -->
+            <div class="col-md-6">
+                <div class="admin-card p-4">
+                    <div class="d-flex align-items-center text-muted mb-3">
+                        <i class="bi bi-houses me-2 fs-5"></i>
+                        <span class="fw-bold">کل املاک</span>
                     </div>
-                    <div class="bg-white bg-opacity-25 rounded p-3 d-flex align-items-center justify-content-center">
-                        <i class="bi bi-houses fs-2"></i>
+                    <div class="d-flex align-items-end">
+                        <h1 class="display-5 fw-bold mb-0 me-3">@totalProps</h1>
+                        <div class="mb-2">
+                            <span class="trend-badge trend-up">
+                                <i class="bi bi-arrow-up-short"></i> ۱۲.۵٪
+                            </span>
+                            <div class="text-muted fs-7 mt-1">نسبت به ماه قبل</div>
+                        </div>
                     </div>
                 </div>
-                <p class="card-text text-white-50 mt-auto mb-4">ثبت ملک جدید، ویرایش و تغییر وضعیت املاک موجود.</p>
-                <a asp-controller="AdminProperties" asp-action="Index" class="btn btn-light fw-bold">
-                    ورود به مدیریت املاک <i class="bi bi-arrow-left ms-1"></i>
-                </a>
+            </div>
+            
+            <!-- Sale / Rent split -->
+            <div class="col-md-6">
+                <div class="admin-card p-4">
+                    <div class="d-flex align-items-center text-muted mb-3">
+                        <i class="bi bi-pie-chart me-2 fs-5"></i>
+                        <span class="fw-bold">فروش / اجاره</span>
+                    </div>
+                    <div class="d-flex align-items-end">
+                        <h1 class="display-5 fw-bold mb-0 me-3">@saleProps <span class="fs-4 text-muted fw-normal">/</span> @rentProps</h1>
+                        <div class="mb-2">
+                            <span class="trend-badge trend-up">
+                                <i class="bi bi-arrow-up-short"></i> ۵.۲٪
+                            </span>
+                            <div class="text-muted fs-7 mt-1">نسبت به ماه قبل</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chart Section (Mockup) -->
+        <div class="admin-card p-4 mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h6 class="fw-bold mb-0">بازدید املاک</h6>
+                <div class="dropdown">
+                    <button class="btn btn-sm btn-white border rounded-pill px-3 dropdown-toggle shadow-sm" type="button">
+                        ۷ روز گذشته
+                    </button>
+                </div>
+            </div>
+            
+            <div class="position-relative" style="height: 250px;">
+                <div class="position-absolute bottom-0 start-0 w-100 fs-2 fw-bold text-muted" style="opacity: 0.2; z-index: 1;">
+                    ۱,۵۴۰ بازدید
+                </div>
+                
+                <!-- Mock Chart Bars -->
+                <div class="d-flex align-items-end justify-content-between h-100 w-100 position-absolute bottom-0 z-index-2 px-4 pb-2" style="z-index: 2;">
+                    <!-- Normal bars -->
+                    <div class="bg-light rounded-top" style="width: 8%; height: 30%;"></div>
+                    <div class="bg-light rounded-top" style="width: 8%; height: 50%;"></div>
+                    <div class="bg-light rounded-top" style="width: 8%; height: 40%;"></div>
+                    
+                    <!-- Highlighted bar -->
+                    <div class="position-relative d-flex justify-content-center" style="width: 8%; height: 80%;">
+                        <div class="position-absolute" style="top: -30px;">
+                            <span class="badge bg-dark rounded-pill shadow">۲۳۰</span>
+                        </div>
+                        <div class="w-100 rounded-top" style="background: linear-gradient(180deg, #10b981 0%, rgba(16,185,129,0.2) 100%);"></div>
+                    </div>
+                    
+                    <div class="bg-light rounded-top" style="width: 8%; height: 60%;"></div>
+                    <div class="bg-light rounded-top" style="width: 8%; height: 35%;"></div>
+                    <div class="bg-light rounded-top" style="width: 8%; height: 70%;"></div>
+                </div>
             </div>
         </div>
     </div>
-    
-    <div class="col-md-4">
-        <div class="card bg-success text-white h-100 shadow-sm border-0">
-            <div class="card-body d-flex flex-column">
-                <div class="d-flex justify-content-between align-items-start mb-3">
-                    <div>
-                        <h6 class="card-title text-white-50 mb-1">گزارش سریع</h6>
-                        <h3 class="fw-bold mb-0">وضعیت سایت</h3>
-                    </div>
-                    <div class="bg-white bg-opacity-25 rounded p-3 d-flex align-items-center justify-content-center">
-                        <i class="bi bi-activity fs-2"></i>
-                    </div>
+
+    <!-- Left Column (RTL) / Side Content -->
+    <div class="col-lg-4">
+        <!-- Recent Properties (Popular Products mockup) -->
+        <div class="admin-card p-4 mb-4">
+            <h5 class="fw-bold mb-4">جدیدترین املاک</h5>
+            
+            @if(recentProperties != null && recentProperties.Any())
+            {
+                <div class="d-flex flex-column gap-3 mb-4">
+                    @foreach(var prop in recentProperties)
+                    {
+                        var coverImg = prop.Images?.OrderBy(i => i.DisplayOrder).FirstOrDefault(i => i.IsCover) ?? prop.Images?.FirstOrDefault();
+                        var imgSrc = coverImg != null ? $"/images/properties/{coverImg.FileName}" : "/images/no-image.jpg";
+                        
+                        <div class="d-flex align-items-center">
+                            <img src="@imgSrc" class="rounded-3 shadow-sm" style="width: 50px; height: 50px; object-fit: cover;" alt="تصویر">
+                            <div class="ms-3 flex-grow-1 ps-2">
+                                <div class="fw-bold text-truncate" style="max-width: 150px;" title="@prop.Title">@prop.Title</div>
+                                <div class="text-muted fs-7">@prop.PropertyType.GetDisplayName()</div>
+                            </div>
+                            <div class="text-end">
+                                @if (prop.TransactionType == Ghaem.Web.Models.Enums.TransactionType.Sale)
+                                {
+                                    <div class="fw-bold">@(prop.SalePrice?.ToString("N0") ?? "-")</div>
+                                }
+                                else
+                                {
+                                    <div class="fw-bold">@(prop.Deposit?.ToString("N0") ?? "-")</div>
+                                }
+                                <div class="fs-8">
+                                    <span class="badge rounded-pill @(prop.Status == Ghaem.Web.Models.Enums.PropertyStatus.Available ? "bg-success bg-opacity-10 text-success" : "bg-danger bg-opacity-10 text-danger")">
+                                        @prop.Status.GetDisplayName()
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    }
                 </div>
-                <p class="card-text text-white-50 mt-auto mb-4">سیستم در حال حاضر با موفقیت در حال اجرا است.</p>
-                <a asp-controller="Home" asp-action="Index" target="_blank" class="btn btn-light fw-bold">
-                    مشاهده سایت <i class="bi bi-box-arrow-up-left ms-1"></i>
+                
+                <a asp-controller="AdminProperties" asp-action="Index" class="btn btn-white border rounded-pill w-100 shadow-sm fw-bold text-muted">
+                    مشاهده همه
                 </a>
+            }
+            else
+            {
+                <div class="text-center text-muted py-4">موردی یافت نشد.</div>
+            }
+        </div>
+
+        <!-- Comments Mockup -->
+        <div class="admin-card p-4">
+            <h6 class="fw-bold mb-4">پیام‌های اخیر</h6>
+            
+            <div class="d-flex mb-3 pb-3 border-bottom">
+                <img src="https://ui-avatars.com/api/?name=Ali&background=e0f2fe&color=0369a1" class="avatar-circle me-3" alt="User">
+                <div class="ps-2">
+                    <div class="d-flex justify-content-between w-100">
+                        <span class="fw-bold fs-7">علی محمدی</span>
+                        <span class="text-muted fs-8">۰۹:۰۰ صبح</span>
+                    </div>
+                    <p class="text-muted fs-7 mb-0 mt-1">آیا این ملک برای بازدید آماده است؟</p>
+                </div>
+            </div>
+            
+            <div class="d-flex">
+                <img src="https://ui-avatars.com/api/?name=Saeed&background=fce7f3&color=be185d" class="avatar-circle me-3" alt="User">
+                <div class="ps-2">
+                    <div class="d-flex justify-content-between w-100">
+                        <span class="fw-bold fs-7">سعید راد</span>
+                        <span class="text-muted fs-8">دیروز</span>
+                    </div>
+                    <p class="text-muted fs-7 mb-0 mt-1">لطفا قیمت نهایی را اعلام کنید.</p>
+                </div>
             </div>
         </div>
     </div>

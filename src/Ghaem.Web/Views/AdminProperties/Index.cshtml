@@ -1,75 +1,75 @@
 @model IEnumerable<Ghaem.Web.Models.Entities.Property>
 @{
-    ViewData["Title"] = "مدیریت املاک";
-    Layout = "_AdminLayout";
+ViewData["Title"] = "مدیریت املاک";
+Layout = "_AdminLayout";
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="h3 text-primary-dark fw-bold mb-0"><i class="bi bi-houses me-2"></i> مدیریت املاک</h2>
-    <a asp-action="Create" class="btn btn-primary shadow-sm">
+<div class="d-flex justify-content-between align-items-center mb-4 pb-2">
+    <h2 class="fw-bold mb-0" style="color: var(--primary-color);">مدیریت املاک</h2>
+    <a asp-action="Create" class="btn btn-dark rounded-pill px-4 shadow-sm">
         <i class="bi bi-plus-lg me-1"></i> افزودن ملک جدید
     </a>
 </div>
 
-<div class="card shadow-sm border-0">
+<div class="admin-card overflow-hidden">
     <div class="card-body p-0">
         <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
-                <thead class="table-light">
+            <table class="table table-borderless table-hover align-middle mb-0">
+                <thead class="bg-light bg-opacity-50 text-muted fs-7">
                     <tr>
-                        <th class="ps-4">تصویر</th>
-                        <th>عنوان</th>
-                        <th>نوع ملک / معامله</th>
-                        <th>متراژ</th>
-                        <th>وضعیت</th>
-                        <th class="pe-4 text-end">عملیات</th>
+                        <th class="ps-4 fw-normal py-3 rounded-top-end">تصویر</th>
+                        <th class="fw-normal py-3">عنوان</th>
+                        <th class="fw-normal py-3">نوع ملک / معامله</th>
+                        <th class="fw-normal py-3">متراژ</th>
+                        <th class="fw-normal py-3">وضعیت</th>
+                        <th class="pe-4 text-end fw-normal py-3 rounded-top-start">عملیات</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="border-top">
                     @if (!Model.Any())
                     {
                         <tr>
                             <td colspan="6" class="text-center py-5 text-muted">
-                                <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                                <i class="bi bi-inbox fs-1 d-block mb-2 opacity-50"></i>
                                 هیچ ملکی ثبت نشده است.
                             </td>
                         </tr>
                     }
                     @foreach (var item in Model)
                     {
-                        <tr>
-                            <td class="ps-4">
+                        <tr class="border-bottom">
+                            <td class="ps-4 py-3">
                                 @if (item.Images != null && item.Images.Any())
                                 {
                                     var primaryImage = item.Images.OrderBy(i => i.DisplayOrder).FirstOrDefault(i => i.IsCover) ?? item.Images.FirstOrDefault();
-                                    <img src="~/images/properties/@primaryImage.FileName" alt="تصویر ملک" class="rounded" style="width: 60px; height: 60px; object-fit: cover;" />
+                                    <img src="~/images/properties/@primaryImage.FileName" alt="تصویر ملک" class="rounded-3" style="width: 50px; height: 50px; object-fit: cover;" />
                                 }
                                 else
                                 {
-                                    <div class="bg-light rounded d-flex align-items-center justify-content-center text-muted" style="width: 60px; height: 60px;">
+                                    <div class="bg-light rounded-3 d-flex align-items-center justify-content-center text-muted" style="width: 50px; height: 50px;">
                                         <i class="bi bi-image"></i>
                                     </div>
                                 }
                             </td>
-                            <td class="fw-bold">@item.Title</td>
-                            <td>
-                                <div>@item.PropertyType.GetDisplayName()</div>
-                                <span class="badge @(item.TransactionType == Ghaem.Web.Models.Enums.TransactionType.Sale ? "bg-primary" : "bg-info text-dark")">
+                            <td class="fw-bold py-3">@item.Title</td>
+                            <td class="py-3">
+                                <div class="text-dark">@item.PropertyType.GetDisplayName()</div>
+                                <span class="badge rounded-pill fw-normal mt-1 @(item.TransactionType == Ghaem.Web.Models.Enums.TransactionType.Sale ? "bg-primary bg-opacity-10 text-primary" : "bg-info bg-opacity-10 text-info")">
                                     @item.TransactionType.GetDisplayName()
                                 </span>
                             </td>
-                            <td>@item.Area متر</td>
-                            <td>
-                                <span class="badge bg-success bg-opacity-10 text-success px-2 py-1">
+                            <td class="py-3 text-muted">@item.Area متر</td>
+                            <td class="py-3">
+                                <span class="badge rounded-pill fw-normal bg-success bg-opacity-10 text-success px-3 py-2">
                                     @item.Status.GetDisplayName()
                                 </span>
                             </td>
-                            <td class="pe-4 text-end">
-                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary me-1" title="ویرایش">
-                                    <i class="bi bi-pencil"></i>
+                            <td class="pe-4 text-end py-3">
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-white border rounded-circle shadow-sm me-1" title="ویرایش" style="width: 32px; height: 32px; padding: 0; line-height: 30px;">
+                                    <i class="bi bi-pencil text-primary"></i>
                                 </a>
-                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger" title="حذف">
-                                    <i class="bi bi-trash"></i>
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-white border rounded-circle shadow-sm" title="حذف" style="width: 32px; height: 32px; padding: 0; line-height: 30px;">
+                                    <i class="bi bi-trash text-danger"></i>
                                 </a>
                             </td>
                         </tr>
@@ -79,4 +79,3 @@
         </div>
     </div>
 </div>
-

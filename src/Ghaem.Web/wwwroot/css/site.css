@@ -152,29 +152,105 @@ h1, h2, h3, h4, h5, h6 {
     color: var(--primary-color) !important;
 }
 
-/* Admin Sidebar */
+/* Admin Sidebar (Mockup Style) */
 #sidebarMenu {
-    background-color: var(--primary-color) !important;
-    color: white;
-    box-shadow: var(--shadow-md);
+    background-color: var(--background-color) !important;
+    border-left: 1px solid var(--border-color); /* RTL */
+    box-shadow: none;
+    z-index: 1000;
 }
 #sidebarMenu .nav-link {
-    color: rgba(255, 255, 255, 0.8) !important;
-    padding: 0.75rem 1.5rem;
-    border-radius: var(--radius-md);
-    margin: 0.25rem 1rem;
+    color: var(--text-secondary) !important;
+    padding: 0.8rem 1.2rem;
+    border-radius: 2rem; /* Pill shape */
+    margin: 0.4rem 1rem;
+    font-weight: 500;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
 }
-#sidebarMenu .nav-link:hover, #sidebarMenu .nav-link.active {
-    background-color: rgba(255, 255, 255, 0.1);
-    color: white !important;
+#sidebarMenu .nav-link i {
+    font-size: 1.1rem;
+    margin-left: 0.75rem; /* RTL */
 }
+#sidebarMenu .nav-link:hover {
+    color: var(--primary-color) !important;
+    background-color: rgba(15, 23, 42, 0.03);
+}
+#sidebarMenu .nav-link.active {
+    background-color: var(--surface-color);
+    color: var(--primary-color) !important;
+    font-weight: 700;
+    box-shadow: var(--shadow-sm);
+}
+
 .admin-navbar {
-    background-color: var(--primary-color) !important;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
+    background-color: var(--background-color) !important;
+    border-bottom: none !important;
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+}
+.admin-navbar .navbar-brand {
+    font-weight: 800;
+    font-size: 1.5rem;
+    color: var(--primary-color) !important;
+    padding-right: 1.5rem;
+}
+.admin-search {
+    background-color: var(--surface-color);
+    border-radius: 2rem;
+    padding: 0.5rem 1.5rem;
+    border: 1px solid transparent;
+    box-shadow: var(--shadow-sm);
+    min-width: 300px;
+}
+.admin-search:focus-within {
+    border-color: var(--border-color);
+}
+.admin-search input {
+    border: none;
+    background: transparent;
+    outline: none;
+    width: 100%;
 }
 .admin-content {
     background-color: var(--background-color);
-    min-height: calc(100vh - 56px);
+    min-height: calc(100vh - 80px);
+    padding-top: 2rem;
+}
+
+/* Admin Dashboard Specific Cards */
+.admin-card {
+    background-color: var(--surface-color);
+    border-radius: 1.5rem; /* Very rounded like mockup */
+    border: none;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+    transition: var(--transition);
+}
+.admin-card-icon {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 1rem;
+    font-size: 1.5rem;
+}
+.trend-badge {
+    font-size: 0.75rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 1rem;
+    font-weight: 600;
+}
+.trend-up { background-color: rgba(16, 185, 129, 0.1); color: var(--success-color); }
+.trend-down { background-color: rgba(239, 68, 68, 0.1); color: var(--danger-color); }
+
+.avatar-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid white;
 }
 
 /* Hero Section */
