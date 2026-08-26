@@ -5,13 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - املاک قائم</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" integrity="sha384-PjX/dflczhp9sR5B/sJQzzg+Od6A2tAIfSjK16sQxG925L94K2Oqf8a2t504P97a" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">املاک قائم</a>
+        <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow mb-4 sticky-top">
+            <div class="container-fluid container-xl">
+                <a class="navbar-brand d-flex align-items-center gap-2" asp-area="" asp-controller="Home" asp-action="Index">
+                    <i class="bi bi-building text-primary-dark"></i>
+                    املاک قائم
+                </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -34,19 +38,23 @@
                     <ul class="navbar-nav">
                         @if (User.Identity?.IsAuthenticated == true)
                         {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Index">پنل مدیریت</a>
+                            <li class="nav-item me-2">
+                                <a class="btn btn-outline-primary" asp-area="" asp-controller="Admin" asp-action="Index">
+                                    <i class="bi bi-speedometer2 me-1"></i> پنل مدیریت
+                                </a>
                             </li>
                             <li class="nav-item">
                                 <form asp-area="" asp-controller="Auth" asp-action="Logout" method="post" class="form-inline">
-                                    <button type="submit" class="nav-link btn btn-link text-dark">خروج</button>
+                                    <button type="submit" class="btn btn-primary"><i class="bi bi-box-arrow-left me-1"></i> خروج</button>
                                 </form>
                             </li>
                         }
                         else
                         {
                              <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Auth" asp-action="Login">ورود</a>
+                                <a class="btn btn-primary" asp-area="" asp-controller="Auth" asp-action="Login">
+                                    <i class="bi bi-person-circle me-1"></i> ورود
+                                </a>
                             </li>
                         }
                     </ul>
@@ -54,15 +62,17 @@
             </div>
         </nav>
     </header>
-    <div class="container">
+    <div class="container-xl">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted text-center pt-3 mt-5">
-        <div class="container">
-            &copy; 2026 - املاک قائم
+    <footer class="border-top footer text-muted pt-4 pb-4 mt-5 bg-surface">
+        <div class="container-xl text-center">
+            <p class="mb-0">
+                <i class="bi bi-c-circle"></i> 2026 - تمامی حقوق برای املاک قائم محفوظ است.
+            </p>
         </div>
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>

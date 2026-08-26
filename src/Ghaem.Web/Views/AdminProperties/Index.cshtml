@@ -3,44 +3,80 @@
     ViewData["Title"] = "مدیریت املاک";
     Layout = "_AdminLayout";
 }
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h2>مدیریت املاک</h2>
-    <a asp-action="Create" class="btn btn-success">افزودن ملک جدید</a>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="h3 text-primary-dark fw-bold mb-0"><i class="bi bi-houses me-2"></i> مدیریت املاک</h2>
+    <a asp-action="Create" class="btn btn-primary shadow-sm">
+        <i class="bi bi-plus-lg me-1"></i> افزودن ملک جدید
+    </a>
 </div>
 
-<table class="table table-striped table-hover mt-3">
-    <thead>
-        <tr>
-            <th>تصویر</th>
-            <th>عنوان</th>
-            <th>معامله</th>
-            <th>متراژ</th>
-            <th>عملیات</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @if (item.Images != null && item.Images.Any())
+<div class="card shadow-sm border-0">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th class="ps-4">تصویر</th>
+                        <th>عنوان</th>
+                        <th>نوع ملک / معامله</th>
+                        <th>متراژ</th>
+                        <th>وضعیت</th>
+                        <th class="pe-4 text-end">عملیات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!Model.Any())
                     {
-                        var primaryImage = item.Images.OrderBy(i => i.DisplayOrder).FirstOrDefault(i => i.IsCover) ?? item.Images.FirstOrDefault();
-                        <img src="~/images/properties/@primaryImage.FileName" alt="تصویر ملک" class="img-thumbnail" style="max-width: 100px; max-height: 100px; object-fit: cover;" />
+                        <tr>
+                            <td colspan="6" class="text-center py-5 text-muted">
+                                <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                                هیچ ملکی ثبت نشده است.
+                            </td>
+                        </tr>
                     }
-                    else
+                    @foreach (var item in Model)
                     {
-                        <span class="text-muted">بدون تصویر</span>
+                        <tr>
+                            <td class="ps-4">
+                                @if (item.Images != null && item.Images.Any())
+                                {
+                                    var primaryImage = item.Images.OrderBy(i => i.DisplayOrder).FirstOrDefault(i => i.IsCover) ?? item.Images.FirstOrDefault();
+                                    <img src="~/images/properties/@primaryImage.FileName" alt="تصویر ملک" class="rounded" style="width: 60px; height: 60px; object-fit: cover;" />
+                                }
+                                else
+                                {
+                                    <div class="bg-light rounded d-flex align-items-center justify-content-center text-muted" style="width: 60px; height: 60px;">
+                                        <i class="bi bi-image"></i>
+                                    </div>
+                                }
+                            </td>
+                            <td class="fw-bold">@item.Title</td>
+                            <td>
+                                <div>@item.PropertyType.GetDisplayName()</div>
+                                <span class="badge @(item.TransactionType == Ghaem.Web.Models.Enums.TransactionType.Sale ? "bg-primary" : "bg-info text-dark")">
+                                    @item.TransactionType.GetDisplayName()
+                                </span>
+                            </td>
+                            <td>@item.Area متر</td>
+                            <td>
+                                <span class="badge bg-success bg-opacity-10 text-success px-2 py-1">
+                                    @item.Status.GetDisplayName()
+                                </span>
+                            </td>
+                            <td class="pe-4 text-end">
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary me-1" title="ویرایش">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger" title="حذف">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
                     }
-                </td>
-                <td>@item.Title</td>
-                <td>@item.TransactionType.GetDisplayName()</td>
-                <td>@item.Area</td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-primary">ویرایش</a>
-                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">حذف</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+

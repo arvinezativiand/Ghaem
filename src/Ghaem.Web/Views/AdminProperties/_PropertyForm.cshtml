@@ -3,94 +3,144 @@
 
 <input type="hidden" asp-for="Slug" />
 
-<div class="row">
-    <div class="col-md-12 mb-3">
-        <label asp-for="Title" class="form-label">عنوان</label>
-        <input asp-for="Title" class="form-control" />
-        <span asp-validation-for="Title" class="text-danger"></span>
+<!-- Basic Information Section -->
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-header bg-white border-bottom pb-3 pt-3">
+        <h5 class="card-title fw-bold text-primary mb-0"><i class="bi bi-info-circle me-2"></i> اطلاعات پایه</h5>
     </div>
-    
-    <div class="col-md-6 mb-3">
-        <label asp-for="PropertyType" class="form-label">نوع ملک</label>
-        <select asp-for="PropertyType" class="form-select" asp-items="Html.GetEnumSelectList<PropertyType>()"></select>
-    </div>
-    <div class="col-md-6 mb-3">
-        <label asp-for="TransactionType" class="form-label">نوع معامله</label>
-        <select asp-for="TransactionType" class="form-select" id="TransactionType" asp-items="Html.GetEnumSelectList<TransactionType>()"></select>
-    </div>
+    <div class="card-body">
+        <div class="row g-3">
+            <div class="col-md-12">
+                <label asp-for="Title" class="form-label fw-bold">عنوان آگهی</label>
+                <input asp-for="Title" class="form-control bg-light" placeholder="مثال: آپارتمان ۱۲۰ متری نوساز" />
+                <span asp-validation-for="Title" class="text-danger small"></span>
+            </div>
+            
+            <div class="col-md-6">
+                <label asp-for="PropertyType" class="form-label fw-bold">نوع ملک</label>
+                <select asp-for="PropertyType" class="form-select bg-light" asp-items="Html.GetEnumSelectList<PropertyType>()"></select>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="TransactionType" class="form-label fw-bold">نوع معامله</label>
+                <select asp-for="TransactionType" class="form-select bg-light" id="TransactionType" asp-items="Html.GetEnumSelectList<TransactionType>()"></select>
+            </div>
 
-    @if (ViewData["IsEdit"] as bool? == true)
-    {
-        <div class="col-md-12 mb-3">
-            <label asp-for="Status" class="form-label">وضعیت</label>
-            <select asp-for="Status" class="form-select" asp-items="Html.GetEnumSelectList<PropertyStatus>()"></select>
-        </div>
-    }
-
-    <div class="col-md-3 mb-3">
-        <label asp-for="Area" class="form-label">متراژ</label>
-        <input asp-for="Area" class="form-control" type="number" />
-        <span asp-validation-for="Area" class="text-danger"></span>
-    </div>
-    <div class="col-md-3 mb-3">
-        <label asp-for="BedroomCount" class="form-label">تعداد خواب</label>
-        <input asp-for="BedroomCount" class="form-control" type="number" />
-    </div>
-    <div class="col-md-3 mb-3">
-        <label asp-for="Floor" class="form-label">طبقه</label>
-        <input asp-for="Floor" class="form-control" type="number" />
-    </div>
-    <div class="col-md-3 mb-3">
-        <label asp-for="TotalFloors" class="form-label">تعداد کل طبقات</label>
-        <input asp-for="TotalFloors" class="form-control" type="number" />
-    </div>
-
-    <div class="col-md-12 mb-3" id="SalePriceContainer">
-        <label asp-for="SalePrice" class="form-label">قیمت فروش (تومان)</label>
-        <input asp-for="SalePrice" class="form-control currency-input" type="text" dir="ltr" />
-        <span asp-validation-for="SalePrice" class="text-danger"></span>
-    </div>
-    <div class="col-md-6 mb-3" id="DepositContainer">
-        <label asp-for="Deposit" class="form-label">مبلغ رهن/ودیعه (تومان)</label>
-        <input asp-for="Deposit" class="form-control currency-input" type="text" dir="ltr" />
-        <span asp-validation-for="Deposit" class="text-danger"></span>
-    </div>
-    <div class="col-md-6 mb-3" id="MonthlyRentContainer">
-        <label asp-for="MonthlyRent" class="form-label">اجاره ماهانه (تومان)</label>
-        <input asp-for="MonthlyRent" class="form-control currency-input" type="text" dir="ltr" />
-        <span asp-validation-for="MonthlyRent" class="text-danger"></span>
-    </div>
-
-    <div class="col-md-12 mb-3">
-        <div class="form-check form-check-inline">
-            <input asp-for="HasParking" class="form-check-input" type="checkbox" />
-            <label asp-for="HasParking" class="form-check-label">پارکینگ</label>
-        </div>
-        <div class="form-check form-check-inline">
-            <input asp-for="HasStorage" class="form-check-input" type="checkbox" />
-            <label asp-for="HasStorage" class="form-check-label">انباری</label>
-        </div>
-        <div class="form-check form-check-inline">
-            <input asp-for="HasElevator" class="form-check-input" type="checkbox" />
-            <label asp-for="HasElevator" class="form-check-label">آسانسور</label>
+            @if (ViewData["IsEdit"] as bool? == true)
+            {
+                <div class="col-md-12 mt-3 pt-3 border-top">
+                    <label asp-for="Status" class="form-label fw-bold text-danger">وضعیت نمایش ملک</label>
+                    <select asp-for="Status" class="form-select border-danger" asp-items="Html.GetEnumSelectList<PropertyStatus>()"></select>
+                </div>
+            }
         </div>
     </div>
+</div>
 
-    <div class="col-md-12 mb-3">
-        <label asp-for="Address" class="form-label">آدرس</label>
-        <textarea asp-for="Address" class="form-control"></textarea>
-        <span asp-validation-for="Address" class="text-danger"></span>
+<!-- Pricing Section -->
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-header bg-white border-bottom pb-3 pt-3">
+        <h5 class="card-title fw-bold text-primary mb-0"><i class="bi bi-tags me-2"></i> قیمت گذاری</h5>
     </div>
-    
-    <div class="col-md-12 mb-3">
-        <label asp-for="Description" class="form-label">توضیحات تکمیلی</label>
-        <textarea asp-for="Description" class="form-control" rows="4"></textarea>
-        <span asp-validation-for="Description" class="text-danger"></span>
+    <div class="card-body bg-primary bg-opacity-10 rounded-bottom">
+        <div class="row g-3">
+            <div class="col-md-12" id="SalePriceContainer">
+                <label asp-for="SalePrice" class="form-label fw-bold">قیمت فروش (تومان)</label>
+                <div class="input-group">
+                    <input asp-for="SalePrice" class="form-control currency-input fw-bold fs-5 text-primary" type="text" dir="ltr" />
+                    <span class="input-group-text bg-white">تومان</span>
+                </div>
+                <span asp-validation-for="SalePrice" class="text-danger small"></span>
+            </div>
+            <div class="col-md-6" id="DepositContainer">
+                <label asp-for="Deposit" class="form-label fw-bold">مبلغ رهن/ودیعه (تومان)</label>
+                <div class="input-group">
+                    <input asp-for="Deposit" class="form-control currency-input fw-bold fs-5 text-primary" type="text" dir="ltr" />
+                    <span class="input-group-text bg-white">تومان</span>
+                </div>
+                <span asp-validation-for="Deposit" class="text-danger small"></span>
+            </div>
+            <div class="col-md-6" id="MonthlyRentContainer">
+                <label asp-for="MonthlyRent" class="form-label fw-bold">اجاره ماهانه (تومان)</label>
+                <div class="input-group">
+                    <input asp-for="MonthlyRent" class="form-control currency-input fw-bold fs-5 text-primary" type="text" dir="ltr" />
+                    <span class="input-group-text bg-white">تومان</span>
+                </div>
+                <span asp-validation-for="MonthlyRent" class="text-danger small"></span>
+            </div>
+        </div>
     </div>
+</div>
 
-    <div class="col-md-12 mb-3">
-        <label asp-for="Images" class="form-label">آپلود تصاویر جدید (تا 20 عکس - پسوند jpg, png, webp)</label>
-        <input asp-for="Images" type="file" multiple class="form-control" accept=".jpg,.jpeg,.png,.webp" />
+<!-- Physical Details Section -->
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-header bg-white border-bottom pb-3 pt-3">
+        <h5 class="card-title fw-bold text-primary mb-0"><i class="bi bi-rulers me-2"></i> مشخصات و امکانات</h5>
+    </div>
+    <div class="card-body">
+        <div class="row g-3">
+            <div class="col-md-3">
+                <label asp-for="Area" class="form-label fw-bold">متراژ (متر)</label>
+                <input asp-for="Area" class="form-control bg-light" type="number" />
+                <span asp-validation-for="Area" class="text-danger small"></span>
+            </div>
+            <div class="col-md-3">
+                <label asp-for="BedroomCount" class="form-label fw-bold">تعداد خواب</label>
+                <input asp-for="BedroomCount" class="form-control bg-light" type="number" />
+            </div>
+            <div class="col-md-3">
+                <label asp-for="Floor" class="form-label fw-bold">طبقه</label>
+                <input asp-for="Floor" class="form-control bg-light" type="number" />
+            </div>
+            <div class="col-md-3">
+                <label asp-for="TotalFloors" class="form-label fw-bold">تعداد کل طبقات</label>
+                <input asp-for="TotalFloors" class="form-control bg-light" type="number" />
+            </div>
+
+            <div class="col-md-12 mt-4">
+                <div class="d-flex flex-wrap gap-4 p-3 bg-light rounded border">
+                    <div class="form-check form-switch fs-5">
+                        <input asp-for="HasParking" class="form-check-input" type="checkbox" role="switch" />
+                        <label asp-for="HasParking" class="form-check-label ms-2">پارکینگ</label>
+                    </div>
+                    <div class="form-check form-switch fs-5">
+                        <input asp-for="HasStorage" class="form-check-input" type="checkbox" role="switch" />
+                        <label asp-for="HasStorage" class="form-check-label ms-2">انباری</label>
+                    </div>
+                    <div class="form-check form-switch fs-5">
+                        <input asp-for="HasElevator" class="form-check-input" type="checkbox" role="switch" />
+                        <label asp-for="HasElevator" class="form-check-label ms-2">آسانسور</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Text & Images Section -->
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-header bg-white border-bottom pb-3 pt-3">
+        <h5 class="card-title fw-bold text-primary mb-0"><i class="bi bi-file-text me-2"></i> آدرس و توضیحات</h5>
+    </div>
+    <div class="card-body">
+        <div class="row g-3">
+            <div class="col-md-12">
+                <label asp-for="Address" class="form-label fw-bold">آدرس کامل</label>
+                <textarea asp-for="Address" class="form-control bg-light" rows="2"></textarea>
+                <span asp-validation-for="Address" class="text-danger small"></span>
+            </div>
+            
+            <div class="col-md-12">
+                <label asp-for="Description" class="form-label fw-bold">توضیحات تکمیلی</label>
+                <textarea asp-for="Description" class="form-control bg-light" rows="5"></textarea>
+                <span asp-validation-for="Description" class="text-danger small"></span>
+            </div>
+
+            <div class="col-md-12 mt-4">
+                <label asp-for="Images" class="form-label fw-bold text-primary"><i class="bi bi-images me-1"></i> آپلود تصاویر جدید</label>
+                <input asp-for="Images" type="file" multiple class="form-control form-control-lg border-primary border-2 border-dotted" accept=".jpg,.jpeg,.png,.webp" />
+                <div class="form-text mt-2 text-muted">امکان آپلود تا 20 عکس (پسوندهای مجاز: jpg, png, webp)</div>
+            </div>
+        </div>
     </div>
 </div>
 

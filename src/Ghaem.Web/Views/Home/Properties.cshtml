@@ -4,74 +4,97 @@
     ViewData["Title"] = "جستجوی املاک";
 }
 
-<h2 class="mb-4">جستجوی املاک</h2>
-
-<div class="card mb-4 bg-light">
-    <div class="card-body">
-        <form method="get" asp-action="Properties" class="row g-3">
-            <div class="col-md-3">
-                <label class="form-label">نوع معامله</label>
-                <select name="type" class="form-select" asp-items="Html.GetEnumSelectList<TransactionType>()">
-                    <option value="">همه</option>
-                </select>
-            </div>
-            <div class="col-md-3">
-                <label class="form-label">نوع ملک</label>
-                <select name="propType" class="form-select" asp-items="Html.GetEnumSelectList<PropertyType>()">
-                    <option value="">همه</option>
-                </select>
-            </div>
-            <div class="col-md-2">
-                <label class="form-label">حداقل قیمت/رهن</label>
-                <input type="number" name="minPrice" class="form-control" />
-            </div>
-            <div class="col-md-2">
-                <label class="form-label">حداکثر قیمت/رهن</label>
-                <input type="number" name="maxPrice" class="form-control" />
-            </div>
-            <div class="col-md-2 d-flex align-items-end">
-                <button type="submit" class="btn btn-primary w-100">جستجو</button>
-            </div>
-        </form>
+<div class="row mb-4 align-items-center">
+    <div class="col-12">
+        <h2 class="h3 mb-0 text-primary-dark border-bottom pb-3"><i class="bi bi-search me-2"></i> جستجوی املاک</h2>
     </div>
 </div>
 
-<div class="row">
-    @if (!Model.Any())
-    {
-        <div class="col-12 text-center mt-5">
-            <h4 class="text-muted">ملکی با این مشخصات یافت نشد.</h4>
-        </div>
-    }
-    @foreach (var item in Model)
-    {
-        var coverImg = item.Images.OrderBy(i => i.DisplayOrder).FirstOrDefault(i => i.IsCover) ?? item.Images.FirstOrDefault();
-        var imgSrc = coverImg != null ? $"/images/properties/{coverImg.FileName}" : "/images/no-image.jpg";
-        
-        <div class="col-md-4 mb-4">
-            <div class="card h-100 shadow-sm">
-                <img src="@imgSrc" class="card-img-top" alt="@item.Title" style="height: 200px; object-fit: cover;">
-                <div class="card-body">
-                    <h5 class="card-title">@item.Title</h5>
-                    <p class="card-text text-muted">@item.PropertyType.GetDisplayName() | @item.TransactionType.GetDisplayName()</p>
-                    <p class="card-text">
-                        <strong>متراژ:</strong> @item.Area متر
-                    </p>
-                    <p class="card-text text-success fw-bold">
-                        @if (item.TransactionType == TransactionType.Sale)
-                        {
-                            <text>فروش: @item.SalePrice?.ToString("N0") تومان</text>
-                        }
-                        else
-                        {
-                            <text>رهن: @item.Deposit?.ToString("N0") تومان | اجاره: @item.MonthlyRent?.ToString("N0") تومان</text>
-                        }
-                    </p>
+<div class="row g-4">
+    <!-- Filter Sidebar -->
+    <div class="col-lg-3">
+        <div class="filter-sidebar">
+            <h5 class="mb-4 fw-bold text-primary"><i class="bi bi-funnel me-2"></i> فیلترها</h5>
+            <form method="get" asp-action="Properties">
+                <div class="mb-3">
+                    <label class="form-label text-muted small fw-bold">نوع معامله</label>
+                    <select name="type" class="form-select" asp-items="Html.GetEnumSelectList<TransactionType>()">
+                        <option value="">همه موارد</option>
+                    </select>
                 </div>
-                <div class="card-footer bg-white border-top-0">
-                    <a asp-action="PropertyDetails" asp-route-slug="@item.Slug" class="btn btn-outline-primary w-100">مشاهده جزئیات</a>
+                <div class="mb-3">
+                    <label class="form-label text-muted small fw-bold">نوع ملک</label>
+                    <select name="propType" class="form-select" asp-items="Html.GetEnumSelectList<PropertyType>()">
+                        <option value="">همه موارد</option>
+                    </select>
                 </div>
-            </div>
+                <div class="mb-3">
+                    <label class="form-label text-muted small fw-bold">حداقل قیمت / رهن (تومان)</label>
+                    <input type="number" name="minPrice" class="form-control" placeholder="مثال: 500000000" />
+                </div>
+                <div class="mb-4">
+                    <label class="form-label text-muted small fw-bold">حداکثر قیمت / رهن (تومان)</label>
+                    <input type="number" name="maxPrice" class="form-control" placeholder="مثال: 2000000000" />
+                </div>
+                <button type="submit" class="btn btn-primary w-100 shadow-sm"><i class="bi bi-search me-1"></i> اعمال فیلتر</button>
+                <a asp-action="Properties" class="btn btn-light w-100 mt-2 text-muted">پاک کردن فیلترها</a>
+            </form>
         </div>
-    }
+    </div>
+
+    <!-- Properties Grid -->
+    <div class="col-lg-9">
+        <div class="row g-4">
+            @if (!Model.Any())
+            {
+                <div class="col-12 text-center mt-5 py-5 bg-surface rounded-lg shadow-sm border border-dashed">
+                    <i class="bi bi-emoji-frown display-4 text-muted mb-3 d-block"></i>
+                    <h4 class="text-muted">ملکی با این مشخصات یافت نشد.</h4>
+                    <p class="text-muted mb-0">لطفاً فیلترهای خود را تغییر دهید.</p>
+                </div>
+            }
+            @foreach (var item in Model)
+            {
+                var coverImg = item.Images.OrderBy(i => i.DisplayOrder).FirstOrDefault(i => i.IsCover) ?? item.Images.FirstOrDefault();
+                var imgSrc = coverImg != null ? $"/images/properties/{coverImg.FileName}" : "/images/no-image.jpg";
+                
+                <div class="col-md-6 col-xl-4">
+                    <div class="card property-card">
+                        <div class="img-wrapper">
+                            <span class="badge property-badge @(item.TransactionType == TransactionType.Sale ? "badge-sale" : "badge-rent")">
+                                @item.TransactionType.GetDisplayName()
+                            </span>
+                            <img src="@imgSrc" class="card-img-top" alt="@item.Title">
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold text-primary-dark mb-1 text-truncate" title="@item.Title">@item.Title</h5>
+                            <p class="property-meta mb-3">
+                                <i class="bi bi-geo-alt"></i> @item.PropertyType.GetDisplayName()
+                                <span class="mx-2 text-muted">|</span>
+                                <i class="bi bi-rulers"></i> @item.Area متر
+                            </p>
+                            <div class="property-price mb-3">
+                                @if (item.TransactionType == TransactionType.Sale)
+                                {
+                                    <text>@item.SalePrice?.ToString("N0") <span class="fs-6 text-muted fw-normal">تومان</span></text>
+                                }
+                                else
+                                {
+                                    <text>@item.Deposit?.ToString("N0") <span class="fs-6 text-muted fw-normal">تومان (رهن)</span></text>
+                                    @if(item.MonthlyRent > 0) {
+                                        <div class="fs-6 text-muted fw-normal mt-1">+ @item.MonthlyRent?.ToString("N0") اجاره</div>
+                                    }
+                                }
+                            </div>
+                        </div>
+                        <div class="card-footer bg-white border-top p-3">
+                            <a asp-action="PropertyDetails" asp-route-slug="@item.Slug" class="btn btn-outline-primary w-100">
+                                مشاهده جزئیات <i class="bi bi-arrow-left ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
 </div>

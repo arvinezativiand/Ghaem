@@ -2,41 +2,80 @@
 @{
     ViewData["Title"] = "صفحه اصلی";
 }
-<div class="text-center mt-5 mb-5 p-5 bg-light rounded">
-    <h1 class="display-4 text-primary">به املاک قائم خوش آمدید</h1>
-    <p class="lead mt-3">بهترین و مناسب‌ترین املاک برای خرید و اجاره را با ما تجربه کنید.</p>
-    <a asp-action="Properties" class="btn btn-primary btn-lg mt-3">مشاهده همه املاک</a>
+<div class="hero-section text-center shadow-lg">
+    <div class="container-xl position-relative z-index-1">
+        <h1 class="hero-title text-white">به املاک قائم خوش آمدید</h1>
+        <p class="hero-subtitle text-white">بهترین و مناسب‌ترین املاک برای خرید و اجاره را با ما تجربه کنید.</p>
+        
+        <div class="row justify-content-center mt-5">
+            <div class="col-md-10 col-lg-8">
+                <div class="card border-0 shadow-sm rounded-pill p-2 bg-white bg-opacity-10" style="backdrop-filter: blur(10px);">
+                    <form method="get" asp-action="Properties" class="row g-2 align-items-center m-0 bg-white rounded-pill p-1 shadow">
+                        <div class="col-md-5">
+                            <select name="type" class="form-select border-0 bg-transparent fw-bold text-secondary" asp-items="Html.GetEnumSelectList<Ghaem.Web.Models.Enums.TransactionType>()">
+                                <option value="">همه معاملات</option>
+                            </select>
+                        </div>
+                        <div class="col-md-5 border-start border-2 border-light">
+                            <select name="propType" class="form-select border-0 bg-transparent fw-bold text-secondary" asp-items="Html.GetEnumSelectList<Ghaem.Web.Models.Enums.PropertyType>()">
+                                <option value="">همه املاک</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2 text-end">
+                            <button type="submit" class="btn btn-accent rounded-pill w-100 fw-bold">
+                                <i class="bi bi-search me-1"></i> بگرد
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
-<h2 class="mb-4">جدیدترین املاک</h2>
-<div class="row">
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="h3 mb-0 text-primary-dark">جدیدترین املاک</h2>
+    <a asp-action="Properties" class="text-decoration-none fw-bold text-secondary">
+        مشاهده همه <i class="bi bi-arrow-left ms-1"></i>
+    </a>
+</div>
+
+<div class="row g-4">
     @foreach (var item in Model)
     {
         var coverImg = item.Images.OrderBy(i => i.DisplayOrder).FirstOrDefault(i => i.IsCover) ?? item.Images.FirstOrDefault();
         var imgSrc = coverImg != null ? $"/images/properties/{coverImg.FileName}" : "/images/no-image.jpg";
         
-        <div class="col-md-4 mb-4">
-            <div class="card h-100 shadow-sm">
-                <img src="@imgSrc" class="card-img-top" alt="@item.Title" style="height: 200px; object-fit: cover;">
+        <div class="col-md-6 col-lg-4">
+            <div class="card property-card">
+                <div class="img-wrapper">
+                    <span class="badge property-badge @(item.TransactionType == Ghaem.Web.Models.Enums.TransactionType.Sale ? "badge-sale" : "badge-rent")">
+                        @item.TransactionType.GetDisplayName()
+                    </span>
+                    <img src="@imgSrc" class="card-img-top" alt="@item.Title">
+                </div>
                 <div class="card-body">
-                    <h5 class="card-title">@item.Title</h5>
-                    <p class="card-text text-muted">@item.PropertyType.GetDisplayName() | @item.TransactionType.GetDisplayName()</p>
-                    <p class="card-text">
-                        <strong>متراژ:</strong> @item.Area متر
+                    <h5 class="card-title fw-bold text-primary-dark mb-1">@item.Title</h5>
+                    <p class="property-meta mb-3">
+                        <i class="bi bi-geo-alt"></i> @item.PropertyType.GetDisplayName()
+                        <span class="mx-2 text-muted">|</span>
+                        <i class="bi bi-rulers"></i> @item.Area متر
                     </p>
-                    <p class="card-text text-success fw-bold">
+                    <div class="property-price mb-3">
                         @if (item.TransactionType == Ghaem.Web.Models.Enums.TransactionType.Sale)
                         {
-                            <text>فروش: @item.SalePrice?.ToString("N0") تومان</text>
+                            <text>@item.SalePrice?.ToString("N0") <span class="fs-6 text-muted fw-normal">تومان</span></text>
                         }
                         else
                         {
-                            <text>رهن: @item.Deposit?.ToString("N0") تومان</text>
+                            <text>@item.Deposit?.ToString("N0") <span class="fs-6 text-muted fw-normal">تومان (رهن)</span></text>
                         }
-                    </p>
+                    </div>
                 </div>
-                <div class="card-footer bg-white border-top-0">
-                    <a asp-action="PropertyDetails" asp-route-slug="@item.Slug" class="btn btn-outline-primary w-100">مشاهده جزئیات</a>
+                <div class="card-footer bg-white border-top p-3">
+                    <a asp-action="PropertyDetails" asp-route-slug="@item.Slug" class="btn btn-outline-primary w-100">
+                        مشاهده جزئیات <i class="bi bi-arrow-left ms-1"></i>
+                    </a>
                 </div>
             </div>
         </div>
