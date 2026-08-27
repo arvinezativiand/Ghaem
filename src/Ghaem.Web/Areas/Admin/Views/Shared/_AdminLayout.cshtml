@@ -14,7 +14,7 @@
         <nav class="navbar navbar-expand-lg admin-navbar fixed-top">
             <div class="container-fluid px-4 align-items-center">
                 <!-- Top Brand -->
-                <a class="navbar-brand d-flex align-items-center" asp-controller="Admin" asp-action="Index" style="width: 250px;">
+                <a class="navbar-brand d-flex align-items-center" asp-area="Admin" asp-controller="Dashboard" asp-action="Index" style="width: 250px;">
                     <div class="avatar-circle bg-dark text-white d-flex align-items-center justify-content-center me-2">
                         <i class="bi bi-shield-check fs-5"></i>
                     </div>
@@ -32,12 +32,12 @@
                     <!-- Mobile Navigation Links (Hidden on md and up) -->
                     <ul class="navbar-nav d-md-none border-bottom pb-3 mb-3 gap-2 mt-3">
                         <li class="nav-item">
-                            <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Admin" ? "active fw-bold text-primary" : "")" asp-controller="Admin" asp-action="Index">
+                            <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Dashboard" ? "active fw-bold text-primary" : "")" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">
                                 <i class="bi bi-grid-1x2 me-1"></i> داشبورد
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "AdminProperties" ? "active fw-bold text-primary" : "")" asp-controller="AdminProperties" asp-action="Index">
+                            <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Properties" ? "active fw-bold text-primary" : "")" asp-area="Admin" asp-controller="Properties" asp-action="Index">
                                 <i class="bi bi-building me-1"></i> مدیریت املاک
                             </a>
                         </li>
@@ -55,7 +55,7 @@
                 <div class="position-sticky pt-3 d-flex flex-column" style="top: 80px; height: calc(100vh - 80px);">
                     <ul class="nav flex-column mb-auto">
                         <li class="nav-item">
-                            <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Admin" ? "active" : "")" asp-controller="Admin" asp-action="Index">
+                            <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Dashboard" ? "active" : "")" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">
                                 <i class="bi bi-grid-1x2"></i> داشبورد
                             </a>
                         </li>
@@ -63,7 +63,7 @@
                             <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-4 mt-4 mb-2 text-muted fs-7 text-uppercase">
                                 <span>مدیریت</span>
                             </h6>
-                            <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "AdminProperties" ? "active" : "")" asp-controller="AdminProperties" asp-action="Index">
+                            <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Properties" ? "active" : "")" asp-area="Admin" asp-controller="Properties" asp-action="Index">
                                 <i class="bi bi-building"></i> املاک
                             </a>
                         </li>

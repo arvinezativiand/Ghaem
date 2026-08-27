@@ -10,12 +10,13 @@ using System.IO;
 namespace Ghaem.Web.Controllers
 {
     [Authorize]
-    public class AdminPropertiesController : Controller
+    [Area("Admin")]
+    public class PropertiesController : Controller
     {
         private readonly ApplicationDbContext _context;
         private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public AdminPropertiesController(ApplicationDbContext context, IWebHostEnvironment webHostEnvironment)
+        public PropertiesController(ApplicationDbContext context, IWebHostEnvironment webHostEnvironment)
         {
             _context = context;
             _webHostEnvironment = webHostEnvironment;

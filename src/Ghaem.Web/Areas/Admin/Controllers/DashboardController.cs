@@ -9,11 +9,12 @@ using System.Threading.Tasks;
 namespace Ghaem.Web.Controllers
 {
     [Authorize]
-    public class AdminController : Controller
+    [Area("Admin")]
+    public class DashboardController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public AdminController(ApplicationDbContext context)
+        public DashboardController(ApplicationDbContext context)
         {
             _context = context;
         }
