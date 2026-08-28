@@ -89,6 +89,14 @@ h1, h2, h3, h4, h5, h6 {
     color: black !important;
 }
 
+/* Fix mobile menu link colors */
+#mobileNav .nav-link {
+    color: var(--text-primary) !important;
+}
+#mobileNav button.nav-link {
+    color: var(--text-primary) !important;
+}
+
 /* Hero Section */
 .hero-section {
     background-image: url('/images/hero-bg.jpg');
@@ -98,9 +106,11 @@ h1, h2, h3, h4, h5, h6 {
     color: white;
     padding: 14rem 0 10rem 0;
     margin-top: -95px; /* Pull under navbar */
-    margin-bottom: 4rem;
+    margin-bottom: 0;
     position: relative;
     overflow: hidden;
+    box-shadow: 0 -10px 30px rgba(0,0,0,0.3), 0 10px 30px rgba(0,0,0,0.3);
+    z-index: 1;
 }
 .hero-section::before {
     content: '';
@@ -267,4 +277,14 @@ h1, h2, h3, h4, h5, h6 {
     border-radius: var(--radius-md);
     padding: 1.5rem;
     margin-bottom: 1.5rem;
+}
+
+/* Desktop border for main property container */
+@media (min-width: 992px) {
+    .properties-desktop-border {
+        border: 1px solid var(--border-color);
+        padding: 2rem;
+        border-radius: var(--radius-lg);
+        background-color: var(--surface-color);
+    }
 }
