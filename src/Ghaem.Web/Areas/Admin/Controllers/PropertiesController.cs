@@ -55,19 +55,17 @@ namespace Ghaem.Web.Controllers
         {
             if (string.IsNullOrWhiteSpace(model.Slug))
             {
-                model.Slug = GenerateSlug(model.Title);
+                model.Slug = await GenerateUniqueSlugAsync(model.Title);
+            }
+            else
+            {
+                model.Slug = await GenerateUniqueSlugAsync(model.Slug);
             }
             // Always set to Available on Create
             model.Status = PropertyStatus.Available;
 
             if (ModelState.IsValid)
             {
-                var existingSlug = await _context.Properties.AnyAsync(p => p.Slug == model.Slug);
-                if (existingSlug)
-                {
-                    ModelState.AddModelError("Slug", "این اسلاگ قبلاً استفاده شده است.");
-                    return View(model);
-                }
 
                 var property = new Property
                 {
@@ -149,13 +147,7 @@ namespace Ghaem.Web.Controllers
 
             if (ModelState.IsValid)
             {
-                var existingSlug = await _context.Properties.AnyAsync(p => p.Slug == model.Slug && p.Id != model.Id);
-                if (existingSlug)
-                {
-                    ModelState.AddModelError("Slug", "این اسلاگ قبلاً استفاده شده است.");
-                    ViewBag.ExistingImages = await _context.PropertyImages.Where(i => i.PropertyId == model.Id).OrderBy(i => i.DisplayOrder).ToListAsync();
-                    return View(model);
-                }
+                model.Slug = await GenerateUniqueSlugAsync(model.Slug ?? model.Title, model.Id);
 
                 var property = await _context.Properties.FindAsync(id);
                 if (property == null) return NotFound();
@@ -292,6 +284,23 @@ namespace Ghaem.Web.Controllers
             // Remove invalid chars (allow english, persian, numbers, dashes)
             str = System.Text.RegularExpressions.Regex.Replace(str, @"[^a-z0-9\u0600-\u06FF-]", "");
             return str;
+        }
+
+        private async Task<string> GenerateUniqueSlugAsync(string phrase, int? excludeId = null)
+        {
+            var baseSlug = GenerateSlug(phrase);
+            if (string.IsNullOrEmpty(baseSlug)) return "";
+            
+            var uniqueSlug = baseSlug;
+            int counter = 1;
+
+            while (await _context.Properties.AnyAsync(p => p.Slug == uniqueSlug && (!excludeId.HasValue || p.Id != excludeId.Value)))
+            {
+                uniqueSlug = $"{baseSlug}-{counter}";
+                counter++;
+            }
+
+            return uniqueSlug;
         }
     }
 }

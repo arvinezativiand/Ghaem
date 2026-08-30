@@ -104,27 +104,35 @@ h1, h2, h3, h4, h5, h6 {
     background-position: center;
     background-repeat: no-repeat;
     color: white;
-    padding: 14rem 0 10rem 0;
+    padding: 16rem 0 15rem 0;
     margin-top: -95px; /* Pull under navbar */
     margin-bottom: 0;
     position: relative;
     overflow: hidden;
     box-shadow: 0 -10px 30px rgba(0,0,0,0.3), 0 10px 30px rgba(0,0,0,0.3);
     z-index: 1;
+    display: flex;
+    align-items: center;
+    min-height: 85vh;
 }
 .hero-section::before {
     content: '';
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0, 0, 0, 0.3); /* Dark overlay */
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.2) 25%, rgba(0, 0, 0, 0.1) 100%);
     z-index: 0;
 }
 .hero-title {
-    font-size: 3.5rem;
+    font-size: 1.8rem;
     font-weight: 500;
     margin-bottom: 2rem;
     position: relative;
     z-index: 1;
+}
+@media (min-width: 768px) {
+    .hero-title {
+        font-size: 3.5rem;
+    }
 }
 
 /* Search Box */
@@ -282,9 +290,9 @@ h1, h2, h3, h4, h5, h6 {
 /* Desktop border for main property container */
 @media (min-width: 992px) {
     .properties-desktop-border {
-        border: 1px solid var(--border-color);
-        padding: 2rem;
-        border-radius: var(--radius-lg);
+        border: 2px solid var(--border-color);
+        padding: 3.5rem;
+        border-radius: 12px;
         background-color: var(--surface-color);
     }
 }

@@ -57,10 +57,7 @@ namespace Ghaem.Web.Models.ViewModels
                 {
                     yield return new ValidationResult("برای اجاره، مبلغ رهن (ودیعه) الزامی است.", new[] { nameof(Deposit) });
                 }
-                if (!MonthlyRent.HasValue)
-                {
-                    yield return new ValidationResult("برای اجاره، مبلغ اجاره ماهانه الزامی است.", new[] { nameof(MonthlyRent) });
-                }
+                // MonthlyRent is optional — empty means رهن کامل
             }
         }
     }

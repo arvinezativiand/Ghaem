@@ -51,7 +51,17 @@
                                 }
                                 else
                                 {
-                                    <text>@item.Deposit?.ToString("N0") تومان <span class="fs-6 fw-normal text-muted">رهن</span></text>
+                                    if (item.MonthlyRent.HasValue && item.MonthlyRent.Value > 0)
+                                    {
+                                        <div class="d-flex flex-column">
+                                            <span>@item.Deposit?.ToString("N0") تومان <span class="fs-6 fw-normal text-muted">رهن</span></span>
+                                            <span class="fs-5 mt-1">@item.MonthlyRent?.ToString("N0") تومان <span class="fs-6 fw-normal text-muted">اجاره</span></span>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <text>@item.Deposit?.ToString("N0") تومان <span class="fs-6 fw-normal text-muted">(رهن کامل)</span></text>
+                                    }
                                 }
                             </div>
                             <div class="property-meta fw-bold">
