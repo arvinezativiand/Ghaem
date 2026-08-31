@@ -95,6 +95,11 @@
                 <label asp-for="TotalFloors" class="form-label fw-bold">تعداد کل طبقات</label>
                 <input asp-for="TotalFloors" class="form-control bg-light" type="number" />
             </div>
+            <div class="col-md-3 mt-3">
+                <label asp-for="ConstructionYear" class="form-label fw-bold">سال ساخت</label>
+                <input asp-for="ConstructionYear" class="form-control bg-light" type="number" placeholder="مثال: 1402" />
+                <span asp-validation-for="ConstructionYear" class="text-danger small"></span>
+            </div>
 
             <div class="col-md-12 mt-4">
                 <div class="d-flex flex-wrap gap-4 p-3 bg-light rounded border">
@@ -175,7 +180,8 @@
         currencyInputs.forEach(function (input) {
             // Format on load
             if (input.value) {
-                var rawValue = input.value.replace(/,/g, '').replace(/\D/g, '');
+                // Remove decimal part from server values like "500000.00" before removing non-digits
+                var rawValue = input.value.split('.')[0].replace(/,/g, '').replace(/\D/g, '');
                 if (rawValue) {
                     input.value = Number(rawValue).toLocaleString('en-US');
                 }

@@ -20,158 +20,319 @@
     }
 
     <script>
-        function updateMainImage(src) {
-            document.getElementById('mainGalleryImage').src = src;
-            document.querySelectorAll('.gallery-thumb').forEach(el => el.classList.remove('active'));
-            event.target.classList.add('active');
+        function openGallery(index) {
+            var carousel = new bootstrap.Carousel(document.getElementById('propertyCarousel'));
+            carousel.to(index);
         }
     </script>
 }
 
-<div class="row mt-4 mb-3">
-    <div class="col-12">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a asp-action="Index" class="text-decoration-none">خانه</a></li>
-                <li class="breadcrumb-item"><a asp-action="Properties" class="text-decoration-none">املاک</a></li>
-                <li class="breadcrumb-item active" aria-current="page">@Model.Title</li>
-            </ol>
-        </nav>
-    </div>
-</div>
+<div class="container-xl" style="margin-top: 110px; margin-bottom: 5rem;">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb fs-6">
+            <li class="breadcrumb-item"><a asp-action="Index" class="text-decoration-none text-muted">خانه</a></li>
+            <li class="breadcrumb-item"><a asp-action="Properties" class="text-decoration-none text-muted">املاک</a></li>
+            <li class="breadcrumb-item active fw-bold text-dark" aria-current="page">@Model.Title</li>
+        </ol>
+    </nav>
 
-<div class="row">
-    <div class="col-lg-8">
-        <h1 class="mb-2 fw-bold text-primary-dark">@Model.Title</h1>
-        <p class="text-muted fs-5 mb-4"><i class="bi bi-geo-alt text-danger me-1"></i> @Model.Address</p>
-
-        @if (Model.Images.Any())
-        {
-            var images = Model.Images.OrderBy(i => i.DisplayOrder).ToList();
-            <div class="gallery-main">
-                <img id="mainGalleryImage" src="~/images/properties/@images.First().FileName" alt="@Model.Title">
-            </div>
-            
-            @if (images.Count > 1)
-            {
-                <div class="gallery-thumbs mb-4">
-                    @foreach (var img in images)
-                    {
-                        var imgSrc = $"/images/properties/{img.FileName}";
-                        <img src="@imgSrc" class="gallery-thumb @(img == images.First() ? "active" : "")" onclick="updateMainImage('@imgSrc')" alt="تصویر کوچک">
-                    }
-                </div>
-            }
-        }
-        else
-        {
-            <div class="gallery-main mb-4 bg-light d-flex align-items-center justify-content-center">
-                <i class="bi bi-image text-muted" style="font-size: 5rem;"></i>
-            </div>
-        }
-
-        <div class="detail-box">
-            <h4 class="mb-4 fw-bold text-primary-dark border-bottom pb-3"><i class="bi bi-card-text me-2"></i> توضیحات ملک</h4>
-            <p style="white-space: pre-wrap; line-height: 2;" class="text-secondary">@Model.Description</p>
-        </div>
-    </div>
-    
-    <div class="col-lg-4">
-        <!-- Price Box -->
-        <div class="detail-box border-top border-4 border-primary">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <span class="badge property-badge position-static @(Model.TransactionType == TransactionType.Sale ? "badge-sale" : "badge-rent")">
-                    @Model.TransactionType.GetDisplayName()
-                </span>
-                <span class="badge bg-success bg-opacity-10 text-success px-3 py-2 rounded-pill">
-                    <i class="bi bi-check-circle me-1"></i> @Model.Status.GetDisplayName()
-                </span>
-            </div>
-            
-            <h3 class="fw-bold text-accent mb-4 text-center">
+    <!-- Header Section -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-4 gap-3">
+        <div>
+            <h1 class="fw-bold property-title mb-2">@Model.Title</h1>
+            <div class="mt-3">
                 @if (Model.TransactionType == TransactionType.Sale)
                 {
-                    <text>@Model.SalePrice?.ToString("N0") <span class="fs-5 text-muted fw-normal">تومان</span></text>
+                    <div class="d-flex align-items-baseline gap-2 mt-2">
+                        <span class="text-muted fs-5">قیمت:</span>
+                        <h2 class="fw-bold text-dark mb-0">@Model.SalePrice?.ToString("N0")</h2>
+                        <span class="text-muted fs-6">تومان</span>
+                    </div>
                 }
                 else
                 {
-                    <div class="fs-4 mb-2">رهن: @Model.Deposit?.ToString("N0") <span class="fs-6 text-muted fw-normal">تومان</span></div>
-                    <div class="fs-4">اجاره: @Model.MonthlyRent?.ToString("N0") <span class="fs-6 text-muted fw-normal">تومان</span></div>
+                    <div class="d-flex flex-wrap align-items-center gap-4 mt-2">
+                        <div class="d-flex align-items-baseline gap-2">
+                            <span class="text-muted fs-5">رهن:</span>
+                            <h2 class="fw-bold text-dark mb-0">@Model.Deposit?.ToString("N0")</h2>
+                            <span class="text-muted fs-6">تومان</span>
+                        </div>
+                        @if (Model.MonthlyRent > 0)
+                        {
+                            <div class="d-flex align-items-baseline gap-2 border-end border-2 pe-4" dir="ltr"> <!-- RTL border logic -->
+                                <div class="d-flex align-items-baseline gap-2" dir="rtl">
+                                    <span class="text-muted fs-5">اجاره:</span>
+                                    <h3 class="fw-bold text-dark mb-0">@Model.MonthlyRent?.ToString("N0")</h3>
+                                    <span class="text-muted fs-6">تومان</span>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="border-end border-2 pe-4">
+                                <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-4 py-2 fs-5 rounded-pill">رهن کامل</span>
+                            </div>
+                        }
+                    </div>
                 }
-            </h3>
-            
-            <button class="btn btn-primary w-100 btn-lg shadow-sm mb-3">
-                <i class="bi bi-telephone me-2"></i> تماس با مشاور
-            </button>
+            </div>
+        </div>
+        <div class="d-flex gap-2">
+            <span class="badge rounded-pill bg-dark text-white px-4 py-2 fs-6">
+                @Model.TransactionType.GetDisplayName()
+            </span>
+            <span class="badge rounded-pill bg-success bg-opacity-10 text-success px-4 py-2 fs-6 border border-success border-opacity-25">
+                <i class="bi bi-check-circle me-1"></i> @Model.Status.GetDisplayName()
+            </span>
+        </div>
+    </div>
+
+    <!-- Modern Image Gallery -->
+    @if (Model.Images.Any())
+    {
+        var images = Model.Images.OrderBy(i => i.DisplayOrder).ToList();
+        var primaryImage = images.First();
+        var otherImages = images.Skip(1).Take(2).ToList();
+
+        <!-- Desktop Modern Image Gallery -->
+        <div class="modern-gallery mb-5 d-none d-md-block">
+            @if (images.Count == 1)
+            {
+                <img src="~/images/properties/@primaryImage.FileName" class="w-100 shadow-sm gallery-hover" style="height: 500px; object-fit: cover; cursor: pointer; border-radius: 20px;" alt="@Model.Title" data-bs-toggle="modal" data-bs-target="#galleryModal" onclick="openGallery(0)">
+            }
+            else if (images.Count == 2)
+            {
+                <div class="row g-2">
+                    <div class="col-md-6">
+                        <div class="overflow-hidden" style="border-radius: 0 20px 20px 0; height: 500px;">
+                            <img src="~/images/properties/@primaryImage.FileName" class="w-100 h-100 gallery-hover" style="object-fit: cover; cursor: pointer;" alt="@Model.Title" data-bs-toggle="modal" data-bs-target="#galleryModal" onclick="openGallery(0)">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="overflow-hidden" style="border-radius: 20px 0 0 20px; height: 500px;">
+                            <img src="~/images/properties/@otherImages[0].FileName" class="w-100 h-100 gallery-hover" style="object-fit: cover; cursor: pointer;" alt="@Model.Title" data-bs-toggle="modal" data-bs-target="#galleryModal" onclick="openGallery(1)">
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="modern-gallery-grid" style="border-radius: 20px;">
+                    <div class="gallery-main-img-container position-relative h-100 overflow-hidden">
+                        <img src="~/images/properties/@primaryImage.FileName" class="gallery-main-img w-100 h-100" style="object-fit: cover;" alt="@Model.Title" data-bs-toggle="modal" data-bs-target="#galleryModal" onclick="openGallery(0)">
+                    </div>
+                    <div class="d-flex flex-column gap-2 h-100">
+                        <div class="position-relative h-50 overflow-hidden">
+                            <img src="~/images/properties/@otherImages[0].FileName" class="gallery-sub-img w-100 h-100" style="object-fit: cover;" alt="@Model.Title" data-bs-toggle="modal" data-bs-target="#galleryModal" onclick="openGallery(1)">
+                        </div>
+                        <div class="position-relative h-50 overflow-hidden">
+                            <img src="~/images/properties/@otherImages[1].FileName" class="gallery-sub-img w-100 h-100" style="object-fit: cover;" alt="@Model.Title" data-bs-toggle="modal" data-bs-target="#galleryModal" onclick="openGallery(2)">
+                            @if (images.Count > 3)
+                            {
+                                <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center" style="background: rgba(0,0,0,0.5); cursor: pointer; transition: background 0.3s;" data-bs-toggle="modal" data-bs-target="#galleryModal" onclick="openGallery(3)" onmouseover="this.style.background='rgba(0,0,0,0.4)'" onmouseout="this.style.background='rgba(0,0,0,0.5)'">
+                                    <span class="text-white fw-bold fs-4">+@(images.Count - 3) تصویر دیگر</span>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
         </div>
 
-        <!-- Details Grid -->
-        <div class="detail-box">
-            <h5 class="fw-bold text-primary-dark mb-4 pb-2 border-bottom">مشخصات کلیدی</h5>
-            <div class="row g-3">
-                <div class="col-6">
-                    <div class="d-flex align-items-center">
-                        <i class="bi bi-rulers detail-icon ms-0 me-3"></i>
-                        <div>
-                            <div class="text-muted small">متراژ</div>
-                            <div class="fw-bold">@Model.Area متر</div>
+        <!-- Mobile Image Slider -->
+        <div class="d-block d-md-none mb-4 rounded-4 overflow-hidden shadow-sm">
+            <div id="mobilePropertyCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    @for(int i=0; i<images.Count; i++)
+                    {
+                        <div class="carousel-item @(i == 0 ? "active" : "")">
+                            <img src="~/images/properties/@images[i].FileName" class="d-block w-100" style="height: 300px; object-fit: cover;" alt="تصویر ملک" data-bs-toggle="modal" data-bs-target="#galleryModal" onclick="openGallery(@i)">
+                        </div>
+                    }
+                </div>
+                @if(images.Count > 1) {
+                    <button class="carousel-control-prev" type="button" data-bs-target="#mobilePropertyCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">قبلی</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#mobilePropertyCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">بعدی</span>
+                    </button>
+                }
+            </div>
+        </div>
+
+        <!-- Gallery Modal -->
+        <div class="modal fade" id="galleryModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-fullscreen modal-dialog-centered">
+                <div class="modal-content bg-dark border-0">
+                    <div class="modal-header border-0 pb-0 position-absolute top-0 end-0 z-3 p-4">
+                        <button type="button" class="btn-close btn-close-white fs-4" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body p-0 d-flex align-items-center justify-content-center">
+                        <div id="propertyCarousel" class="carousel slide w-100" data-bs-ride="false">
+                            <div class="carousel-inner">
+                                @for(int i=0; i<images.Count; i++)
+                                {
+                                    <div class="carousel-item @(i == 0 ? "active" : "")">
+                                        <img src="~/images/properties/@images[i].FileName" class="d-block mx-auto" style="max-height: 90vh; max-width: 90vw; object-fit: contain;" alt="تصویر ملک">
+                                    </div>
+                                }
+                            </div>
+                            <button class="carousel-control-prev" style="width: 10%;" type="button" data-bs-target="#propertyCarousel" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true" style="width: 3rem; height: 3rem;"></span>
+                                <span class="visually-hidden">قبلی</span>
+                            </button>
+                            <button class="carousel-control-next" style="width: 10%;" type="button" data-bs-target="#propertyCarousel" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true" style="width: 3rem; height: 3rem;"></span>
+                                <span class="visually-hidden">بعدی</span>
+                            </button>
                         </div>
                     </div>
                 </div>
-                <div class="col-6">
-                    <div class="d-flex align-items-center">
-                        <i class="bi bi-house detail-icon ms-0 me-3"></i>
-                        <div>
-                            <div class="text-muted small">نوع ملک</div>
-                            <div class="fw-bold">@Model.PropertyType.GetDisplayName()</div>
-                        </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="modern-gallery mb-5 bg-light d-flex align-items-center justify-content-center rounded-4" style="height: 400px; border: 2px dashed #ccc;">
+            <div class="text-center text-muted">
+                <i class="bi bi-image" style="font-size: 5rem;"></i>
+                <p class="mt-3 fs-5">تصویری برای این ملک ثبت نشده است</p>
+            </div>
+        </div>
+    }
+
+    <div class="row g-5">
+        <div class="col-lg-8">
+            <!-- Key Features Row -->
+            <div class="row g-3 mb-5 pb-4 border-bottom">
+                <div class="col-6 col-md-3">
+                    <div class="key-features-item h-100">
+                        <i class="bi bi-rulers"></i>
+                        <div class="text-muted small mb-1">متراژ</div>
+                        <div class="fw-bold fs-5">@Model.Area <span class="fs-6 fw-normal">متر</span></div>
                     </div>
                 </div>
-                <div class="col-6">
-                    <div class="d-flex align-items-center">
-                        <i class="bi bi-door-closed detail-icon ms-0 me-3"></i>
-                        <div>
-                            <div class="text-muted small">تعداد خواب</div>
-                            <div class="fw-bold">@Model.BedroomCount</div>
-                        </div>
+                <div class="col-6 col-md-3">
+                    <div class="key-features-item h-100">
+                        <i class="bi bi-door-closed"></i>
+                        <div class="text-muted small mb-1">تعداد خواب</div>
+                        <div class="fw-bold fs-5">@Model.BedroomCount <span class="fs-6 fw-normal">خوابه</span></div>
                     </div>
                 </div>
-                <div class="col-6">
-                    <div class="d-flex align-items-center">
-                        <i class="bi bi-building detail-icon ms-0 me-3"></i>
-                        <div>
-                            <div class="text-muted small">طبقه</div>
-                            <div class="fw-bold">@Model.Floor از @Model.TotalFloors</div>
-                        </div>
+                <div class="col-6 col-md-3">
+                    <div class="key-features-item h-100">
+                        <i class="bi bi-building"></i>
+                        <div class="text-muted small mb-1">طبقه</div>
+                        <div class="fw-bold fs-5">@Model.Floor <span class="fs-6 text-muted fw-normal">از @Model.TotalFloors</span></div>
                     </div>
                 </div>
-                <div class="col-6">
-                    <div class="d-flex align-items-center">
-                        <i class="bi bi-calendar-event detail-icon ms-0 me-3"></i>
-                        <div>
-                            <div class="text-muted small">سال ساخت</div>
-                            <div class="fw-bold">@Model.ConstructionYear</div>
+                <div class="col-6 col-md-3">
+                    <div class="key-features-item h-100">
+                        <i class="bi bi-house-door"></i>
+                        <div class="text-muted small mb-1">نوع ملک</div>
+                        <div class="fw-bold fs-5">@Model.PropertyType.GetDisplayName()</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Address & Description -->
+            <div class="mb-5">
+                <p class="text-muted fs-5 mb-4"><i class="bi bi-geo-alt-fill text-danger me-1"></i> @Model.Address</p>
+                <h3 class="fw-bold mb-4 d-flex align-items-center gap-2">
+                    <i class="bi bi-card-text text-primary fs-4"></i> درباره این ملک
+                </h3>
+                <div class="description-container p-4 rounded-4 bg-light border border-light shadow-sm">
+                    <p class="description-text mb-0" style="white-space: pre-wrap;">@Model.Description</p>
+                </div>
+            </div>
+
+            <!-- Amenities -->
+            <div class="mb-5">
+                <h3 class="fw-bold mb-4 d-flex align-items-center gap-2">
+                    <i class="bi bi-stars text-warning fs-4"></i> امکانات
+                </h3>
+                <div class="row g-4">
+                    <div class="col-md-4 col-sm-6">
+                        <div class="amenity-card">
+                            <i class="bi bi-p-circle icon"></i>
+                            <span class="flex-grow-1 fw-bold">پارکینگ</span>
+                            @if(Model.HasParking){ <i class="bi bi-check-circle-fill status-icon text-success"></i> } else { <i class="bi bi-x-circle status-icon text-danger"></i> }
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-6">
+                        <div class="amenity-card">
+                            <i class="bi bi-box icon"></i>
+                            <span class="flex-grow-1 fw-bold">انباری</span>
+                            @if(Model.HasStorage){ <i class="bi bi-check-circle-fill status-icon text-success"></i> } else { <i class="bi bi-x-circle status-icon text-danger"></i> }
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-6">
+                        <div class="amenity-card">
+                            <i class="bi bi-arrow-up-square icon"></i>
+                            <span class="flex-grow-1 fw-bold">آسانسور</span>
+                            @if(Model.HasElevator){ <i class="bi bi-check-circle-fill status-icon text-success"></i> } else { <i class="bi bi-x-circle status-icon text-danger"></i> }
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-6">
+                        <div class="amenity-card">
+                            <i class="bi bi-calendar-event icon"></i>
+                            <span class="flex-grow-1 fw-bold">سال ساخت</span>
+                            <span class="status-icon fw-bold text-dark">@Model.ConstructionYear</span>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Amenities -->
-        <div class="detail-box">
-            <h5 class="fw-bold text-primary-dark mb-4 pb-2 border-bottom">امکانات</h5>
-            <div class="d-flex flex-column gap-3">
-                <div class="d-flex align-items-center justify-content-between">
-                    <span><i class="bi bi-p-circle me-2 text-muted"></i> پارکینگ</span>
-                    @if(Model.HasParking){ <i class="bi bi-check-circle-fill text-success"></i> } else { <i class="bi bi-x-circle text-danger"></i> }
-                </div>
-                <div class="d-flex align-items-center justify-content-between">
-                    <span><i class="bi bi-box me-2 text-muted"></i> انباری</span>
-                    @if(Model.HasStorage){ <i class="bi bi-check-circle-fill text-success"></i> } else { <i class="bi bi-x-circle text-danger"></i> }
-                </div>
-                <div class="d-flex align-items-center justify-content-between">
-                    <span><i class="bi bi-arrow-up-square me-2 text-muted"></i> آسانسور</span>
-                    @if(Model.HasElevator){ <i class="bi bi-check-circle-fill text-success"></i> } else { <i class="bi bi-x-circle text-danger"></i> }
+        <!-- Sticky Sidebar -->
+        <div class="col-lg-4">
+            <div class="sticky-top" style="top: 120px; z-index: 10;">
+                <div class="premium-price-card">
+                    <div class="price-header text-center mb-4 pb-4 border-bottom">
+                        @if (Model.TransactionType == TransactionType.Sale)
+                        {
+                            <div class="text-muted mb-2 fs-5">قیمت کل</div>
+                            <div class="price-value fs-1">@Model.SalePrice?.ToString("N0")</div>
+                            <div class="text-muted fs-6 mt-2">تومان</div>
+                        }
+                        else
+                        {
+                            <div class="mb-4">
+                                <div class="text-muted mb-2">مبلغ رهن</div>
+                                <div class="price-value fs-2">@Model.Deposit?.ToString("N0")</div>
+                                <div class="text-muted fs-6 mt-1">تومان</div>
+                            </div>
+                            @if (Model.MonthlyRent > 0)
+                            {
+                                <div class="pt-3 border-top border-light">
+                                    <div class="text-muted mb-2">مبلغ اجاره</div>
+                                    <div class="price-value fs-2">@Model.MonthlyRent?.ToString("N0")</div>
+                                    <div class="text-muted fs-6 mt-1">تومان</div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="pt-3 border-top border-light">
+                                    <div class="fs-4 text-success fw-bold mt-2 d-flex justify-content-center align-items-center gap-2">
+                                        <i class="bi bi-check-circle-fill"></i> رهن کامل
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </div>
+                    <div class="price-body">
+                        <button class="btn btn-primary w-100 btn-contact-gradient mb-3">
+                            <i class="bi bi-telephone-fill me-2 fs-5 align-middle"></i> <span class="fs-5 align-middle">تماس با مشاور</span>
+                        </button>
+                        <div class="d-flex justify-content-between text-muted small px-2">
+                            <span><i class="bi bi-shield-check text-success me-1"></i> تضمین امنیت معامله</span>
+                            <span><i class="bi bi-clock-history me-1"></i> پاسخگویی سریع</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
