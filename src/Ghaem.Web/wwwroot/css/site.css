@@ -670,10 +670,9 @@ h6 {
     position: relative;
 }
 
-/* Mobile gallery: break out of container padding so image is edge-to-edge */
+/* Mobile gallery: keep inside container padding for edge space and curved corners */
 .mobile-gallery-breakout {
-    margin-inline: calc(-1 * var(--bs-gutter-x, 0.75rem));
-    border-radius: 0;
+    border-radius: 20px;
     overflow: hidden;
 }
 
