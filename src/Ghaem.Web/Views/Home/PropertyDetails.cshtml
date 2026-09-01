@@ -66,7 +66,7 @@
         <div class="modern-gallery mb-5 d-none d-md-block">
             @if (images.Count == 1)
             {
-                <img src="~/images/properties/@primaryImage.FileName" class="w-100 shadow-sm gallery-hover" style="height: 500px; object-fit: cover; cursor: pointer; border-radius: 20px;" alt="@Model.Title" data-bs-toggle="modal" data-bs-target="#galleryModal" onclick="openGallery(0)">
+                <img src="~/images/properties/@primaryImage.FileName" class="w-100 shadow-sm gallery-hover" style="height: 500px; object-fit: cover; object-position: center; cursor: pointer; border-radius: 20px;" alt="@Model.Title" data-bs-toggle="modal" data-bs-target="#galleryModal" onclick="openGallery(0)">
             }
             else if (images.Count == 2)
             {
@@ -108,13 +108,13 @@
         </div>
 
         <!-- Mobile Image Slider -->
-        <div class="d-block d-md-none mb-4 rounded-4 overflow-hidden shadow-sm">
+        <div class="d-block d-md-none mb-4 mobile-gallery-breakout">
             <div id="mobilePropertyCarousel" class="carousel slide" data-bs-ride="carousel">
                 <div class="carousel-inner">
                     @for(int i=0; i<images.Count; i++)
                     {
                         <div class="carousel-item @(i == 0 ? "active" : "")">
-                            <img src="~/images/properties/@images[i].FileName" class="d-block w-100" style="height: 300px; object-fit: cover;" alt="تصویر ملک" data-bs-toggle="modal" data-bs-target="#galleryModal" onclick="openGallery(@i)">
+                            <img src="~/images/properties/@images[i].FileName" class="d-block w-100" style="height: 280px; object-fit: cover; object-position: center;" alt="تصویر ملک" data-bs-toggle="modal" data-bs-target="#galleryModal" onclick="openGallery(@i)">
                         </div>
                     }
                 </div>
@@ -178,7 +178,7 @@
             <div class="d-flex justify-content-around text-center mb-5 py-3 border-bottom border-top">
                 <div class="px-3 w-100">
                     <div class="text-muted small mb-2">متراژ</div>
-                    <div class="text-dark fs-5">@Model.Area</div>
+                    <div class="text-dark fs-5">@Model.Area.ToString("0")</div>
                 </div>
                 <div class="vr bg-secondary opacity-25"></div>
                 <div class="px-3 w-100">
@@ -290,12 +290,15 @@
             <div class="sticky-top" style="top: 120px; z-index: 10;">
                 <div class="premium-price-card">
                     <div class="price-header text-center mb-3 pb-3 border-bottom">
-                        <h5 class="fw-bold mb-0">تماس با آگهی‌دهنده</h5>
+                        <h5 class="fw-bold mb-0">تماس با املاک</h5>
                     </div>
                     <div class="price-body">
-                        <button class="btn btn-primary w-100 btn-contact-gradient mb-3">
+                        <a href="tel:09399797088" class="btn btn-primary w-100 btn-contact-gradient mb-3">
                             <i class="bi bi-telephone-fill me-2 fs-5 align-middle"></i> <span class="fs-5 align-middle">تماس با مشاور</span>
-                        </button>
+                        </a>
+                        <div class="d-flex justify-content-center mb-2">
+                            <span class="text-muted small"><i class="bi bi-telephone me-1"></i>۰۹۳۹۹۷۹۷۰۸۸</span>
+                        </div>
                         <div class="d-flex justify-content-between text-muted small px-2">
                             <span><i class="bi bi-shield-check text-success me-1"></i> تضمین امنیت معامله</span>
                             <span><i class="bi bi-clock-history me-1"></i> پاسخگویی سریع</span>

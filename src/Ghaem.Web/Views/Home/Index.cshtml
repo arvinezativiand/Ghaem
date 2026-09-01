@@ -43,7 +43,7 @@
                             </span>
                             <img src="@imgSrc" class="card-img-top w-100" alt="@item.Title">
                         </div>
-                        <div class="card-body pt-3 px-3 pb-3 text-end">
+                        <div class="card-body pt-3 px-3 pb-3">
                             <h5 class="fw-bold text-dark text-truncate mb-2" title="@item.Title">@item.Title</h5>
                             <div class="property-price">
                                 @if (item.TransactionType == Ghaem.Web.Models.Enums.TransactionType.Sale)
@@ -68,7 +68,7 @@
                             <div class="property-meta fw-bold">
                                 @item.BedroomCount خواب 
                                 <span class="mx-2 text-muted fw-normal">|</span> 
-                                @item.Area متر مربع 
+                                @item.Area.ToString("0") متر مربع 
                                 <span class="mx-2 text-muted fw-normal">|</span> 
                                 @item.PropertyType.GetDisplayName()
                             </div>

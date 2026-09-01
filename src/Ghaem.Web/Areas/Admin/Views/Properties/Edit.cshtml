@@ -9,16 +9,18 @@
 
 @if (ViewBag.ExistingImages != null && ((IEnumerable<Ghaem.Web.Models.Entities.PropertyImage>)ViewBag.ExistingImages).Any())
 {
-    <div class="card mb-4">
+    <div class="card mb-4" id="existingImagesCard">
         <div class="card-header">تصاویر موجود</div>
-        <div class="card-body d-flex flex-wrap gap-3">
+        <div class="card-body d-flex flex-wrap gap-3" id="imageGrid">
             @foreach (var img in ViewBag.ExistingImages)
             {
-                <div class="position-relative" style="width: 150px; height: 150px;">
+                <div class="position-relative img-thumb-wrapper" id="img-@img.Id" style="width: 150px; height: 150px;">
                     <img src="~/images/properties/@img.FileName" class="img-thumbnail w-100 h-100 object-fit-cover" />
-                    <form asp-action="DeleteImage" asp-route-id="@img.Id" method="post" class="position-absolute top-0 start-0 m-1">
-                        <button type="submit" class="btn btn-sm btn-danger p-1" onclick="return confirm('آیا از حذف این تصویر مطمئن هستید؟');">حذف</button>
-                    </form>
+                    <button type="button" class="btn btn-sm btn-danger p-1 position-absolute top-0 start-0 m-1 delete-img-btn"
+                            data-img-id="@img.Id"
+                            title="حذف تصویر">
+                        <i class="bi bi-trash"></i>
+                    </button>
                     @if (img.IsCover)
                     {
                         <span class="badge bg-success position-absolute bottom-0 end-0 m-1">کاور</span>
@@ -41,4 +43,39 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        document.querySelectorAll('.delete-img-btn').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                var imgId = btn.getAttribute('data-img-id');
+                if (!confirm('آیا از حذف این تصویر مطمئن هستید؟')) return;
+
+                btn.disabled = true;
+                btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+
+                fetch('/Admin/Properties/DeleteImage/' + imgId, {
+                    method: 'POST',
+                    headers: {
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value || ''
+                    }
+                })
+                .then(function (res) {
+                    if (res.ok) {
+                        var wrapper = document.getElementById('img-' + imgId);
+                        wrapper.style.transition = 'opacity 0.3s';
+                        wrapper.style.opacity = '0';
+                        setTimeout(function () { wrapper.remove(); }, 300);
+                    } else {
+                        alert('خطا در حذف تصویر. لطفاً دوباره تلاش کنید.');
+                        btn.disabled = false;
+                        btn.innerHTML = '<i class="bi bi-trash"></i>';
+                    }
+                })
+                .catch(function () {
+                    alert('خطا در ارتباط با سرور.');
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="bi bi-trash"></i>';
+                });
+            });
+        });
+    </script>
 }

@@ -27,7 +27,9 @@ namespace Ghaem.Web.Controllers
             return View(latestProperties);
         }
 
-        public async Task<IActionResult> Properties(TransactionType? type, PropertyType? propType, decimal? minPrice, decimal? maxPrice)
+        public async Task<IActionResult> Properties(TransactionType? type, PropertyType? propType, 
+            decimal? minPrice, decimal? maxPrice, string? search,
+            decimal? minArea, decimal? maxArea, int? bedrooms)
         {
             var query = _context.Properties
                 .Include(p => p.Images)
@@ -46,10 +48,28 @@ namespace Ghaem.Web.Controllers
             if (maxPrice.HasValue)
                 query = query.Where(p => (p.TransactionType == TransactionType.Sale && p.SalePrice <= maxPrice) || (p.TransactionType == TransactionType.Rent && p.Deposit <= maxPrice));
 
+            if (!string.IsNullOrWhiteSpace(search))
+                query = query.Where(p => p.Title.Contains(search) || p.Address.Contains(search) || p.Description.Contains(search));
+
+            if (minArea.HasValue)
+                query = query.Where(p => p.Area >= minArea.Value);
+
+            if (maxArea.HasValue)
+                query = query.Where(p => p.Area <= maxArea.Value);
+
+            if (bedrooms.HasValue)
+                query = query.Where(p => p.BedroomCount == bedrooms.Value);
+
             var properties = await query.OrderByDescending(p => p.CreatedAt).ToListAsync();
             
             ViewBag.CurrentType = type;
             ViewBag.CurrentPropType = propType;
+            ViewBag.CurrentMinPrice = minPrice;
+            ViewBag.CurrentMaxPrice = maxPrice;
+            ViewBag.CurrentSearch = search;
+            ViewBag.CurrentMinArea = minArea;
+            ViewBag.CurrentMaxArea = maxArea;
+            ViewBag.CurrentBedrooms = bedrooms;
             return View(properties);
         }
 

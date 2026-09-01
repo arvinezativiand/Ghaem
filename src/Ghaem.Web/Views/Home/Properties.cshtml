@@ -2,106 +2,359 @@
 @model IEnumerable<Ghaem.Web.Models.Entities.Property>
 @{
     ViewData["Title"] = "جستجوی املاک";
+
+    var currentType = ViewBag.CurrentType as TransactionType?;
+    var currentPropType = ViewBag.CurrentPropType as PropertyType?;
+    var currentMinPrice = ViewBag.CurrentMinPrice as decimal?;
+    var currentMaxPrice = ViewBag.CurrentMaxPrice as decimal?;
+    var currentSearch = ViewBag.CurrentSearch as string;
+    var currentMinArea = ViewBag.CurrentMinArea as decimal?;
+    var currentMaxArea = ViewBag.CurrentMaxArea as decimal?;
+    var currentBedrooms = ViewBag.CurrentBedrooms as int?;
+
+    var hasActiveFilters = currentType.HasValue || currentPropType.HasValue || currentMinPrice.HasValue 
+        || currentMaxPrice.HasValue || !string.IsNullOrEmpty(currentSearch)
+        || currentMinArea.HasValue || currentMaxArea.HasValue || currentBedrooms.HasValue;
 }
 
-<div class="row mb-4 align-items-center">
-    <div class="col-12">
-        <h2 class="h3 mb-0 text-primary-dark border-bottom pb-3"><i class="bi bi-search me-2"></i> جستجوی املاک</h2>
-    </div>
-</div>
+<div class="container-xl properties-page-container">
 
-<div class="row g-4">
-    <!-- Filter Sidebar -->
-    <div class="col-lg-3">
-        <div class="filter-sidebar">
-            <h5 class="mb-4 fw-bold text-primary"><i class="bi bi-funnel me-2"></i> فیلترها</h5>
-            <form method="get" asp-action="Properties">
-                <div class="mb-3">
-                    <label class="form-label text-muted small fw-bold">نوع معامله</label>
-                    <select name="type" class="form-select" asp-items="Html.GetEnumSelectList<TransactionType>()">
-                        <option value="">همه موارد</option>
-                    </select>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label text-muted small fw-bold">نوع ملک</label>
-                    <select name="propType" class="form-select" asp-items="Html.GetEnumSelectList<PropertyType>()">
-                        <option value="">همه موارد</option>
-                    </select>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label text-muted small fw-bold">حداقل قیمت / رهن (تومان)</label>
-                    <input type="number" name="minPrice" class="form-control" placeholder="مثال: 500000000" />
-                </div>
-                <div class="mb-4">
-                    <label class="form-label text-muted small fw-bold">حداکثر قیمت / رهن (تومان)</label>
-                    <input type="number" name="maxPrice" class="form-control" placeholder="مثال: 2000000000" />
-                </div>
-                <button type="submit" class="btn btn-primary w-100 shadow-sm"><i class="bi bi-search me-1"></i> اعمال فیلتر</button>
-                <a asp-action="Properties" class="btn btn-light w-100 mt-2 text-muted">پاک کردن فیلترها</a>
-            </form>
+    <!-- Page Title -->
+    <div class="mb-3">
+        <h1 class="fw-bold fs-4 mb-0">املاک</h1>
+    </div>
+
+    <!-- Search Bar (full width, above everything) -->
+    <div class="properties-search-bar mb-3">
+        <form method="get" asp-action="Properties" id="searchBarForm" class="d-flex align-items-center gap-2">
+            <!-- Preserve existing filters -->
+            @if (currentType.HasValue) { <input type="hidden" name="type" value="@((int)currentType.Value)" /> }
+            @if (currentPropType.HasValue) { <input type="hidden" name="propType" value="@((int)currentPropType.Value)" /> }
+            @if (currentMinPrice.HasValue) { <input type="hidden" name="minPrice" value="@currentMinPrice" /> }
+            @if (currentMaxPrice.HasValue) { <input type="hidden" name="maxPrice" value="@currentMaxPrice" /> }
+            @if (currentMinArea.HasValue) { <input type="hidden" name="minArea" value="@currentMinArea" /> }
+            @if (currentMaxArea.HasValue) { <input type="hidden" name="maxArea" value="@currentMaxArea" /> }
+            @if (currentBedrooms.HasValue) { <input type="hidden" name="bedrooms" value="@currentBedrooms" /> }
+            <div class="input-group">
+                <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
+                <input type="text" name="search" class="form-control border-start-0" 
+                       placeholder="جستجو در املاک..." value="@currentSearch" />
+            </div>
+        </form>
+    </div>
+
+    <!-- Active Filters Chips -->
+    @if (hasActiveFilters)
+    {
+        <div class="active-filters-bar mb-4 d-flex flex-wrap align-items-center gap-2">
+            <span class="text-muted small"><i class="bi bi-funnel-fill"></i></span>
+            @if (currentType.HasValue)
+            {
+                <a asp-action="Properties" 
+                   asp-route-propType="@((int?)currentPropType)" asp-route-minPrice="@currentMinPrice"
+                   asp-route-maxPrice="@currentMaxPrice" asp-route-search="@currentSearch"
+                   asp-route-minArea="@currentMinArea" asp-route-maxArea="@currentMaxArea" asp-route-bedrooms="@currentBedrooms"
+                   class="filter-chip active">
+                    @currentType.Value.GetDisplayName() <i class="bi bi-x"></i>
+                </a>
+            }
+            @if (currentPropType.HasValue)
+            {
+                <a asp-action="Properties" 
+                   asp-route-type="@((int?)currentType)" asp-route-minPrice="@currentMinPrice"
+                   asp-route-maxPrice="@currentMaxPrice" asp-route-search="@currentSearch"
+                   asp-route-minArea="@currentMinArea" asp-route-maxArea="@currentMaxArea" asp-route-bedrooms="@currentBedrooms"
+                   class="filter-chip active">
+                    @currentPropType.Value.GetDisplayName() <i class="bi bi-x"></i>
+                </a>
+            }
+            @if (currentMinPrice.HasValue || currentMaxPrice.HasValue)
+            {
+                var priceLabel = "";
+                if (currentMinPrice.HasValue && currentMaxPrice.HasValue)
+                    priceLabel = $"قیمت: {currentMinPrice.Value:N0} تا {currentMaxPrice.Value:N0}";
+                else if (currentMinPrice.HasValue)
+                    priceLabel = $"حداقل قیمت: {currentMinPrice.Value:N0}";
+                else
+                    priceLabel = $"حداکثر قیمت: {currentMaxPrice.Value:N0}";
+
+                <a asp-action="Properties" 
+                   asp-route-type="@((int?)currentType)" asp-route-propType="@((int?)currentPropType)"
+                   asp-route-search="@currentSearch"
+                   asp-route-minArea="@currentMinArea" asp-route-maxArea="@currentMaxArea" asp-route-bedrooms="@currentBedrooms"
+                   class="filter-chip active">
+                    @priceLabel <i class="bi bi-x"></i>
+                </a>
+            }
+            @if (currentMinArea.HasValue || currentMaxArea.HasValue)
+            {
+                var areaLabel = "";
+                if (currentMinArea.HasValue && currentMaxArea.HasValue)
+                    areaLabel = $"متراژ: {currentMinArea.Value:0} تا {currentMaxArea.Value:0}";
+                else if (currentMinArea.HasValue)
+                    areaLabel = $"حداقل متراژ: {currentMinArea.Value:0}";
+                else
+                    areaLabel = $"حداکثر متراژ: {currentMaxArea.Value:0}";
+
+                <a asp-action="Properties" 
+                   asp-route-type="@((int?)currentType)" asp-route-propType="@((int?)currentPropType)"
+                   asp-route-minPrice="@currentMinPrice" asp-route-maxPrice="@currentMaxPrice"
+                   asp-route-search="@currentSearch" asp-route-bedrooms="@currentBedrooms"
+                   class="filter-chip active">
+                    @areaLabel <i class="bi bi-x"></i>
+                </a>
+            }
+            @if (currentBedrooms.HasValue)
+            {
+                <a asp-action="Properties" 
+                   asp-route-type="@((int?)currentType)" asp-route-propType="@((int?)currentPropType)"
+                   asp-route-minPrice="@currentMinPrice" asp-route-maxPrice="@currentMaxPrice"
+                   asp-route-search="@currentSearch" asp-route-minArea="@currentMinArea" asp-route-maxArea="@currentMaxArea"
+                   class="filter-chip active">
+                    @currentBedrooms خواب <i class="bi bi-x"></i>
+                </a>
+            }
+            @if (!string.IsNullOrEmpty(currentSearch))
+            {
+                <a asp-action="Properties" 
+                   asp-route-type="@((int?)currentType)" asp-route-propType="@((int?)currentPropType)"
+                   asp-route-minPrice="@currentMinPrice" asp-route-maxPrice="@currentMaxPrice"
+                   asp-route-minArea="@currentMinArea" asp-route-maxArea="@currentMaxArea" asp-route-bedrooms="@currentBedrooms"
+                   class="filter-chip active">
+                    «@currentSearch» <i class="bi bi-x"></i>
+                </a>
+            }
+            <a asp-action="Properties" class="filter-chip-clear">پاک کردن همه</a>
         </div>
-    </div>
+    }
 
-    <!-- Properties Grid -->
-    <div class="col-lg-9">
-        <div class="row g-4">
+    <div class="row g-4">
+        <!-- Property Listing -->
+        <div class="col-lg-8 order-2 order-lg-1">
+            <!-- Mobile filter toggle -->
+            <div class="d-lg-none mb-3">
+                <button class="btn btn-sm btn-outline-secondary w-100" type="button" data-bs-toggle="offcanvas" data-bs-target="#filterOffcanvas">
+                    <i class="bi bi-sliders me-1"></i> فیلترها
+                </button>
+            </div>
+
             @if (!Model.Any())
             {
-                <div class="col-12 text-center mt-5 py-5 bg-surface rounded-lg shadow-sm border border-dashed">
-                    <i class="bi bi-emoji-frown display-4 text-muted mb-3 d-block"></i>
-                    <h4 class="text-muted">ملکی با این مشخصات یافت نشد.</h4>
-                    <p class="text-muted mb-0">لطفاً فیلترهای خود را تغییر دهید.</p>
+                <div class="text-center py-5 mt-4">
+                    <i class="bi bi-building display-1 text-muted d-block mb-3" style="opacity: 0.3;"></i>
+                    <h5 class="text-muted fw-normal">ملکی با این مشخصات یافت نشد</h5>
+                    <p class="text-muted small mb-4">فیلترهای خود را تغییر دهید یا همه املاک را مشاهده کنید.</p>
+                    <a asp-action="Properties" class="btn btn-sm btn-dark rounded-pill px-4">مشاهده همه املاک</a>
                 </div>
             }
-            @foreach (var item in Model)
-            {
-                var coverImg = item.Images.OrderBy(i => i.DisplayOrder).FirstOrDefault(i => i.IsCover) ?? item.Images.FirstOrDefault();
-                var imgSrc = coverImg != null ? $"/images/properties/{coverImg.FileName}" : "/images/no-image.jpg";
-                
-                <div class="col-md-6 col-xl-4">
-                    <div class="card property-card">
-                        <div class="img-wrapper">
-                            <span class="badge property-badge @(item.TransactionType == TransactionType.Sale ? "badge-sale" : "badge-rent")">
-                                @item.TransactionType.GetDisplayName()
-                            </span>
-                            <img src="@imgSrc" class="card-img-top" alt="@item.Title">
+
+            <div class="properties-list">
+                @foreach (var item in Model)
+                {
+                    var coverImg = item.Images.OrderBy(i => i.DisplayOrder).FirstOrDefault(i => i.IsCover) ?? item.Images.FirstOrDefault();
+                    var imgSrc = coverImg != null ? $"/images/properties/{coverImg.FileName}" : "/images/no-image.jpg";
+                    var imageCount = item.Images.Count;
+                    
+                    <a asp-action="PropertyDetails" asp-route-slug="@item.Slug" class="property-list-item text-decoration-none" id="property-@item.Id">
+                        <div class="property-list-img">
+                            <img src="@imgSrc" alt="@item.Title" loading="lazy" />
+                            @if (imageCount > 1)
+                            {
+                                <span class="img-count-badge"><i class="bi bi-images"></i> @imageCount</span>
+                            }
                         </div>
-                        <div class="card-body">
-                            <h5 class="card-title fw-bold text-primary-dark mb-1 text-truncate" title="@item.Title">@item.Title</h5>
-                            <p class="property-meta mb-3">
-                                <i class="bi bi-geo-alt"></i> @item.PropertyType.GetDisplayName()
-                                <span class="mx-2 text-muted">|</span>
-                                <i class="bi bi-rulers"></i> @item.Area متر
-                            </p>
-                            <div class="property-price mb-3">
+                        <div class="property-list-content">
+                            <h3 class="property-list-title">@item.Title</h3>
+                            <div class="property-list-price">
                                 @if (item.TransactionType == TransactionType.Sale)
                                 {
-                                    <text>@item.SalePrice?.ToString("N0") <span class="fs-6 text-muted fw-normal">تومان</span></text>
+                                    <span>@item.SalePrice?.ToString("N0") تومان</span>
                                 }
                                 else
                                 {
                                     if (item.MonthlyRent.HasValue && item.MonthlyRent.Value > 0)
                                     {
-                                        <div class="d-flex flex-column">
-                                            <span>@item.Deposit?.ToString("N0") <span class="fs-6 text-muted fw-normal">تومان (رهن)</span></span>
-                                            <span class="fs-5 mt-1">@item.MonthlyRent?.ToString("N0") <span class="fs-6 text-muted fw-normal">تومان (اجاره)</span></span>
-                                        </div>
+                                        <span>@item.Deposit?.ToString("N0") تومان <span class="price-label">رهن</span></span>
+                                        <span class="rent-price">@item.MonthlyRent?.ToString("N0") تومان <span class="price-label">اجاره</span></span>
                                     }
                                     else
                                     {
-                                        <text>@item.Deposit?.ToString("N0") <span class="fs-6 text-muted fw-normal">تومان (رهن کامل)</span></text>
+                                        <span>@item.Deposit?.ToString("N0") تومان <span class="price-label">رهن کامل</span></span>
                                     }
                                 }
                             </div>
+                            <div class="property-list-meta">
+                                <span>@item.Area.ToString("0") متر</span>
+                                @if (item.BedroomCount > 0)
+                                {
+                                    <span class="meta-dot"></span>
+                                    <span>@item.BedroomCount خواب</span>
+                                }
+                                <span class="meta-dot"></span>
+                                <span>@item.PropertyType.GetDisplayName()</span>
+                            </div>
+                            @if (!string.IsNullOrEmpty(item.Address))
+                            {
+                                <div class="property-list-address">
+                                    @item.Address
+                                </div>
+                            }
                         </div>
-                        <div class="card-footer bg-white border-top p-3">
-                            <a asp-action="PropertyDetails" asp-route-slug="@item.Slug" class="btn btn-outline-primary w-100">
-                                مشاهده جزئیات <i class="bi bi-arrow-left ms-1"></i>
-                            </a>
+                    </a>
+                }
+            </div>
+        </div>
+
+        <!-- Desktop Filter Sidebar -->
+        <div class="col-lg-4 order-1 order-lg-2 d-none d-lg-block">
+            <div class="filter-panel">
+                <h6 class="filter-panel-title">فیلترها</h6>
+                <form method="get" asp-action="Properties" id="desktopFilterForm">
+                    @if (!string.IsNullOrEmpty(currentSearch)) { <input type="hidden" name="search" value="@currentSearch" /> }
+
+                    <div class="filter-group">
+                        <label class="filter-label">نوع معامله</label>
+                        <select name="type" class="form-select form-select-sm filter-select">
+                            <option value="">انتخاب</option>
+                            @foreach (TransactionType tt in Enum.GetValues(typeof(TransactionType)))
+                            {
+                                <option value="@((int)tt)" selected="@(currentType == tt)">@tt.GetDisplayName()</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label class="filter-label">نوع ملک</label>
+                        <select name="propType" class="form-select form-select-sm filter-select">
+                            <option value="">انتخاب</option>
+                            @foreach (PropertyType pt in Enum.GetValues(typeof(PropertyType)))
+                            {
+                                <option value="@((int)pt)" selected="@(currentPropType == pt)">@pt.GetDisplayName()</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label class="filter-label">محدوده قیمت (تومان)</label>
+                        <div class="d-flex gap-2">
+                            <input type="number" name="minPrice" class="form-control form-control-sm filter-input" 
+                                   placeholder="از" value="@currentMinPrice" />
+                            <input type="number" name="maxPrice" class="form-control form-control-sm filter-input" 
+                                   placeholder="تا" value="@currentMaxPrice" />
                         </div>
                     </div>
-                </div>
-            }
+
+                    <div class="filter-group">
+                        <label class="filter-label">متراژ (متر مربع)</label>
+                        <div class="d-flex gap-2">
+                            <input type="number" name="minArea" class="form-control form-control-sm filter-input" 
+                                   placeholder="از" value="@currentMinArea" />
+                            <input type="number" name="maxArea" class="form-control form-control-sm filter-input" 
+                                   placeholder="تا" value="@currentMaxArea" />
+                        </div>
+                    </div>
+
+                    <div class="filter-group">
+                        <label class="filter-label">تعداد اتاق خواب</label>
+                        <select name="bedrooms" class="form-select form-select-sm filter-select">
+                            <option value="">انتخاب</option>
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                <option value="@i" selected="@(currentBedrooms == i)">@i اتاق</option>
+                            }
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-dark btn-sm w-100 mt-3">اعمال فیلتر</button>
+                    @if (hasActiveFilters)
+                    {
+                        <a asp-action="Properties" class="btn btn-link btn-sm w-100 text-muted mt-1">پاک کردن فیلترها</a>
+                    }
+                </form>
+            </div>
         </div>
+    </div>
+</div>
+
+<!-- CTA Banner -->
+<div class="properties-cta-banner">
+    <div class="container-xl">
+        <div class="d-flex flex-column flex-sm-row align-items-center justify-content-between gap-3">
+            <div>
+                <p class="mb-0 fw-bold">ملک مدنظر خود را پیدا نکردید؟</p>
+                <p class="mb-0 text-muted small mt-1">مشاورین ما آماده‌اند تا بهترین گزینه را برای شما پیدا کنند.</p>
+            </div>
+            <a href="tel:09399797088" class="btn btn-dark rounded-pill px-4 flex-shrink-0">
+                <i class="bi bi-telephone-fill me-2"></i>تماس بگیرید
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Mobile Offcanvas Filter -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="filterOffcanvas" aria-labelledby="filterOffcanvasLabel">
+    <div class="offcanvas-header border-bottom">
+        <h6 class="offcanvas-title fw-bold" id="filterOffcanvasLabel"><i class="bi bi-sliders me-2"></i>فیلترها</h6>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="بستن"></button>
+    </div>
+    <div class="offcanvas-body">
+        <form method="get" asp-action="Properties" id="mobileFilterForm">
+            @if (!string.IsNullOrEmpty(currentSearch)) { <input type="hidden" name="search" value="@currentSearch" /> }
+
+            <div class="mb-3">
+                <label class="form-label small text-muted fw-bold">نوع معامله</label>
+                <select name="type" class="form-select form-select-sm">
+                    <option value="">انتخاب</option>
+                    @foreach (TransactionType tt in Enum.GetValues(typeof(TransactionType)))
+                    {
+                        <option value="@((int)tt)" selected="@(currentType == tt)">@tt.GetDisplayName()</option>
+                    }
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label small text-muted fw-bold">نوع ملک</label>
+                <select name="propType" class="form-select form-select-sm">
+                    <option value="">انتخاب</option>
+                    @foreach (PropertyType pt in Enum.GetValues(typeof(PropertyType)))
+                    {
+                        <option value="@((int)pt)" selected="@(currentPropType == pt)">@pt.GetDisplayName()</option>
+                    }
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label small text-muted fw-bold">محدوده قیمت (تومان)</label>
+                <div class="d-flex gap-2">
+                    <input type="number" name="minPrice" class="form-control form-control-sm" placeholder="از" value="@currentMinPrice" />
+                    <input type="number" name="maxPrice" class="form-control form-control-sm" placeholder="تا" value="@currentMaxPrice" />
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label small text-muted fw-bold">متراژ (متر مربع)</label>
+                <div class="d-flex gap-2">
+                    <input type="number" name="minArea" class="form-control form-control-sm" placeholder="از" value="@currentMinArea" />
+                    <input type="number" name="maxArea" class="form-control form-control-sm" placeholder="تا" value="@currentMaxArea" />
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label small text-muted fw-bold">تعداد اتاق خواب</label>
+                <select name="bedrooms" class="form-select form-select-sm">
+                    <option value="">انتخاب</option>
+                    @for (int i = 1; i <= 5; i++)
+                    {
+                        <option value="@i" selected="@(currentBedrooms == i)">@i اتاق</option>
+                    }
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-dark btn-sm w-100">اعمال فیلتر</button>
+            @if (hasActiveFilters)
+            {
+                <a asp-action="Properties" class="btn btn-link btn-sm w-100 text-muted mt-2">پاک کردن فیلترها</a>
+            }
+        </form>
     </div>
 </div>
