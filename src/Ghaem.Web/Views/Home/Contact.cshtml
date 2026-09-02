@@ -1,20 +1,96 @@
 @{
     ViewData["Title"] = "تماس با ما";
 }
-<h2 class="mb-4">تماس با ما</h2>
-<div class="row mt-4">
-    <div class="col-md-6">
-        <div class="card border-0 shadow-sm">
-            <div class="card-body">
-                <h4 class="card-title text-primary mb-4">اطلاعات تماس</h4>
-                <p>برای دریافت مشاوره و اطلاعات بیشتر می‌توانید از طریق راه‌های زیر با ما در ارتباط باشید:</p>
-                <ul class="list-unstyled mt-3">
-                    <li class="mb-2"><i class="bi bi-telephone text-primary me-2"></i> <strong>تلفن:</strong> ۰۲۱-۱۲۳۴۵۶۷۸</li>
-                    <li class="mb-2"><i class="bi bi-phone text-primary me-2"></i> <strong>موبایل:</strong> ۰۹۱۲۳۴۵۶۷۸۹</li>
-                    <li class="mb-2"><i class="bi bi-envelope text-primary me-2"></i> <strong>ایمیل:</strong> info@ghaemrealestate.com</li>
-                    <li class="mb-2"><i class="bi bi-geo-alt text-primary me-2"></i> <strong>آدرس:</strong> تهران، خیابان اصلی، پلاک ۱</li>
-                </ul>
+
+<div class="container mt-5 pt-4 pb-5">
+    <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+        <div class="row g-0 align-items-stretch">
+            
+            <!-- Image Section -->
+            <div class="col-lg-5">
+                <img src="~/images/contact-apartment-small.jpg" alt="نمای آپارتمان زیبا" class="img-fluid w-100 contact-img object-fit-cover" />
             </div>
+
+            <!-- Content Section -->
+            <div class="col-lg-7 p-4 p-md-5">
+                <div class="text-center text-lg-start mb-5">
+                    <h1 class="display-6 fw-bold text-dark mb-3">تماس با ما</h1>
+                    <p class="text-muted fs-5 lh-lg">
+                        مثل یک طراح حرفه‌ای UI/UX شروع به خلق رویاهایتان کنید! 
+                        برای یافتن بهترین ملک متناسب با سلیقه شما، ما در کنار شما هستیم.
+                    </p>
+                </div>
+
+                <div class="d-flex flex-column gap-4">
+                    
+                    <!-- Phone Section -->
+                    <div class="d-flex align-items-center gap-4 p-4 bg-light rounded-4 border border-light-subtle shadow-sm transition-all hover-shadow">
+                        <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 64px; height: 64px;">
+                            <i class="bi bi-phone fs-2"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h5 class="fw-bold mb-2">تماس تلفنی مستقیم</h5>
+                            <p class="text-muted small mb-3">در تمامی روزهای هفته پاسخگوی شما هستیم.</p>
+                            <a href="tel:09399797088" class="btn btn-primary btn-lg rounded-pill px-4 shadow-sm w-100 w-sm-auto d-inline-flex align-items-center justify-content-center gap-2">
+                                <i class="bi bi-telephone-fill"></i>
+                                <span>تماس با مشاور</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Address Section -->
+                    <div class="d-flex align-items-center gap-4 p-4 bg-light rounded-4 border border-light-subtle shadow-sm transition-all hover-shadow">
+                        <div class="bg-success bg-opacity-10 text-success rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 64px; height: 64px;">
+                            <i class="bi bi-geo-alt fs-2"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h5 class="fw-bold mb-2">آدرس دفتر مرکزی</h5>
+                            <p class="text-muted mb-0 lh-lg">
+                                تهران، خیابان اصلی، پلاک ۱
+                                <br />
+                                ساختمان تجاری قائم، طبقه سوم، واحد ۳۰۲
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- WhatsApp Section -->
+                    <div class="d-flex align-items-center gap-4 p-4 bg-light rounded-4 border border-light-subtle shadow-sm transition-all hover-shadow">
+                        <div class="bg-success bg-opacity-10 text-success rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 64px; height: 64px;">
+                            <i class="bi bi-whatsapp fs-2"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h5 class="fw-bold mb-2">ارتباط در واتس‌اپ</h5>
+                            <p class="text-muted small mb-3">برای پشتیبانی و ارسال تصاویر پیام دهید.</p>
+                            <a href="https://wa.me/989399797088" target="_blank" rel="noopener noreferrer" class="btn btn-success btn-lg rounded-pill px-4 shadow-sm w-100 w-sm-auto d-inline-flex align-items-center justify-content-center gap-2">
+                                <i class="bi bi-whatsapp"></i>
+                                <span>پیام در واتس‌اپ</span>
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
         </div>
     </div>
 </div>
+
+<style>
+    .hover-shadow:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 .5rem 1rem rgba(0,0,0,.08)!important;
+        background-color: #fff !important;
+    }
+    .transition-all {
+        transition: all 0.3s ease;
+    }
+    .contact-img {
+        height: 250px;
+    }
+    @@media (min-width: 992px) {
+        .contact-img {
+            height: 100%;
+            min-height: 100%;
+        }
+    }
+</style>
