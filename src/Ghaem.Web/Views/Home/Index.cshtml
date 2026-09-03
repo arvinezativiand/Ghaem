@@ -10,7 +10,7 @@
         
         <div class="search-container mt-5 shadow-lg">
             <form method="get" asp-action="Properties" class="search-input-group m-0" id="heroSearchForm">
-                <input type="text" name="search" placeholder="شهر، محله، آدرس یا کد ملک را وارد کنید..." class="form-control rounded-0" />
+                <input type="text" name="search" placeholder="جستجو کنید..." class="form-control rounded-0" />
                 <button type="submit">
                     <i class="bi bi-search"></i>
                 </button>
@@ -90,7 +90,7 @@
 
     <!-- Informational Section -->
     <div class="row align-items-center mb-5 pb-5">
-        <div class="col-lg-6 mb-4 mb-lg-0 pe-lg-5">
+        <div class="col-lg-6 order-2 order-lg-1 mb-4 mb-lg-0 pe-lg-5">
             <h2 class="fw-bold display-6 mb-4">املاک ویژه و دست‌نیافتنی</h2>
             <h4 class="fw-bold mb-4">بیش از ۵,۰۰۰ ملک منحصر به فرد که هیچ کجای دیگر نخواهید یافت</h4>
             <p class="text-secondary fs-5 mb-4">
@@ -98,16 +98,8 @@
             </p>
             <a asp-action="Contact" class="btn btn-primary px-4 py-2 rounded-0 fw-bold">تماس با مشاورین ما</a>
         </div>
-        <div class="col-lg-6">
-            <div class="p-5 text-white" style="background-color: black;">
-                <h2 class="fw-bold mb-4">AMLAK GHAEM<br>PRIVATE EXCLUSIVES</h2>
-                <p class="fs-5 mb-4">Unlock premium homes you won't find anywhere else. Contact us today.</p>
-                <div class="mt-4 pt-4 border-top border-secondary">
-                    <i class="bi bi-house-door fs-1"></i>
-                    <i class="bi bi-building fs-1 ms-4"></i>
-                    <i class="bi bi-shop fs-1 ms-4"></i>
-                </div>
-            </div>
+        <div class="col-lg-6 order-1 order-lg-2 mb-4 mb-lg-0">
+            <img src="~/images/amlak_ghaem_office.jpg" alt="املاک قائم" class="img-fluid rounded-4 shadow-lg w-100" style="object-fit: cover; max-height: 400px;" />
         </div>
     </div>
 </div>
