@@ -72,6 +72,19 @@ h6 {
     color: white;
 }
 
+/* Custom Neshan Button */
+.btn-neshan {
+    background-color: #0084ff;
+    color: white;
+    border: none;
+    transition: var(--transition);
+}
+
+.btn-neshan:hover {
+    background-color: #006bce;
+    color: white;
+}
+
 /* Public Navbar */
 .navbar.public-navbar {
     background-color: transparent !important;
